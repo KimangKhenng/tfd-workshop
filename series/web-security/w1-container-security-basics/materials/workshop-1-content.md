@@ -239,28 +239,30 @@ docker run ubuntu uname -r
 
 Containers provide **process isolation**, not **security isolation**.
 
+**✅ What Containers ARE Good For**
+
 ```mermaid
 graph TB
-    subgraph Good["✅ What Containers ARE Good For"]
-        G1["📦 Packaging Applications"]
-        G2["🔧 Dependency Isolation"]
-        G3["⚡ Resource Limits<br/>(CPU, Memory)"]
-        G4["🚀 Portability"]
-    end
+    G1["📦 Packaging Applications"]
+    G2["🔧 Dependency Isolation"]
+    G3["⚡ Resource Limits<br/>(CPU, Memory)"]
+    G4["🚀 Portability"]
     
-    subgraph Bad["❌ What Containers ARE NOT Designed For"]
-        B1["🚫 Running Untrusted Code"]
-        B2["🚫 Multi-tenant Security"]
-        B3["🚫 Kernel Exploit Protection"]
-        B4["🚫 Replacing Security Boundaries"]
-    end
-    
-    style Good fill:#d4edda
-    style Bad fill:#f8d7da
     style G1 fill:#c3e6cb
     style G2 fill:#c3e6cb
     style G3 fill:#c3e6cb
     style G4 fill:#c3e6cb
+```
+
+**❌ What Containers ARE NOT Designed For**
+
+```mermaid
+graph TB
+    B1["🚫 Running Untrusted Code"]
+    B2["🚫 Multi-tenant Security"]
+    B3["🚫 Kernel Exploit Protection"]
+    B4["🚫 Replacing Security Boundaries"]
+    
     style B1 fill:#f5c6cb
     style B2 fill:#f5c6cb
     style B3 fill:#f5c6cb
