@@ -1,19 +1,45 @@
-# Container Security Workshop Series 🔐🐳
+<div align="center">
+  <img src="assets/tfd_logo.jpeg" alt="TFD Logo" width="50"/>
+</div>
 
-[![Workshop Series](https://img.shields.io/badge/Workshops-7%20Part%20Series-blue.svg)](https://github.com/tfdevs/container-security-workshop-series)
+# TFD Workshop
+
+[![Workshop Series](https://img.shields.io/badge/TFD-Workshop%20Series-blue.svg)](https://github.com/tfdevs/container-security-workshop-series)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Required-2496ED?logo=docker)](https://www.docker.com/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-> A comprehensive hands-on workshop series covering practical container security from basics to advanced topics.
-
-Transform your understanding of Docker and container security through 7 progressive workshops with real-world scenarios, live demonstrations, and hands-on exercises.
+> **Teaching for Development (TFDvs)** - Empowering developers through hands-on, practical workshops across security, DevOps, and modern development practices.
 
 ---
 
-## 🎯 About This Series
+## What is TFD Workshop?
 
-Container security is critical in modern DevOps, yet many developers and engineers lack proper knowledge of security best practices. This workshop series bridges that gap with:
+**TFD Workshop** is a comprehensive educational initiative offering multiple workshop series covering essential topics in modern software development. Each series consists of progressive, hands-on sessions designed to build practical skills through real-world scenarios, live demonstrations, and interactive exercises.
+
+### Current & Upcoming Workshop Series
+
+#### **Web Security Series** - *IN PROGRESS*
+Master security in web applications and containerized environments
+
+- **Container Security** (7 workshops) - Currently running
+  - Workshop 1: Container Security Basics ✅ Completed (Feb 4, 2026) | [Materials](./series/web-security/w1-container-security-basics/materials/workshop-1-content.md) | [Recording](#)
+  - Workshops 2-7: Coming soon
+- **API Security** (5 workshops) - 🚧 Coming soon
+- **Authentication & Authorization** (4 workshops) - 🚧 Coming soon
+- **Web Application Firewall** (3 workshops) - 🚧 Coming soon
+
+#### **DevOps Series** - 🔜 Coming Soon
+CI/CD, Infrastructure as Code, and automation
+
+#### **Software Architecture Series** - 🔜 Coming Soon
+Microservices, scalability, and design patterns
+
+---
+
+## Why Container Security?
+
+Container security is critical in modern DevOps, yet many developers and engineers lack proper knowledge of security best practices. This 7-part workshop series bridges that gap with:
 
 - **Practical, hands-on learning** - Real commands, real scenarios
 - **Progressive curriculum** - From basics to advanced topics
@@ -23,7 +49,7 @@ Container security is critical in modern DevOps, yet many developers and enginee
 
 ---
 
-## 📚 Workshop Overview
+## Container Security Workshops Overview
 
 ### Workshop 1: Container Security Basics ✅ COMPLETED
 **Date:** February 4, 2026 | **Duration:** 2.5 hours | **Participants:** 300+
@@ -129,49 +155,6 @@ Container security is critical in modern DevOps, yet many developers and enginee
 
 ---
 
-## 🗂️ Repository Structure
-
-```
-container-security-workshop-series/
-├── README.md                           # This file
-├── LICENSE                             # MIT License
-├── CONTRIBUTING.md                     # Contribution guidelines
-├── .gitignore                          # Git ignore rules
-│
-├── w1-container-security-basics/       # Workshop 1 - ✅ COMPLETED
-│   ├── README.md                       # Workshop overview
-│   ├── materials/                      # Teaching materials
-│   │   ├── workshop-1-content.md      # Detailed teaching notes
-│   │   ├── slides-outline.md          # Presentation slides
-│   │   └── instructor-guide.md        # Instructor reference
-│   ├── scripts/                        # Demo & setup scripts
-│   │   ├── demo-script.sh             # Automated demos
-│   │   └── lab-setup.sh               # Environment setup
-│   ├── exercises/                      # Student materials
-│   │   └── hands-on-lab.md            # Lab exercises
-│   ├── poster.html                     # Workshop poster
-│   └── facebook-post.md               # Social media content
-│
-├── w2-image-security/                  # Workshop 2 - 🚧 Coming Soon
-├── w3-runtime-security/                # Workshop 3 - 🚧 Coming Soon
-├── w4-secrets-management/              # Workshop 4 - 🚧 Coming Soon
-├── w5-network-security/                # Workshop 5 - 🚧 Coming Soon
-├── w6-supply-chain/                    # Workshop 6 - 🚧 Coming Soon
-├── w7-final-project/                   # Workshop 7 - 🚧 Coming Soon
-│
-├── resources/                          # Shared resources
-│   ├── tools/                         # Security tools & scripts
-│   ├── references/                    # Documentation & links
-│   └── templates/                     # Templates for exercises
-│
-└── docs/                              # Additional documentation
-    ├── setup-guide.md                 # Environment setup
-    ├── troubleshooting.md             # Common issues
-    └── faq.md                         # Frequently asked questions
-```
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -226,7 +209,7 @@ sudo -v
 
 ---
 
-## 🎓 Who Should Use This?
+## Who Should Use This?
 
 This workshop series is perfect for:
 
@@ -270,16 +253,31 @@ This workshop series is perfect for:
 
 ## 📊 Workshop Statistics
 
-### Workshop 1 (February 4, 2026)
+### First Workshop Success 🎉
+**Container Security Basics - February 4, 2026**
+
 - **Registrations:** 300+ participants
 - **Countries:** 15+ countries represented
 - **Satisfaction:** 98% would recommend
 - **Completion Rate:** 85% completed hands-on labs
 - **Platform:** Google Meet
 
+*This is just the beginning! More workshops and series coming soon.*
+
 ---
 
-## 🤝 Contributing
+## TFD Mission
+
+**"Making technology education accessible, practical, and impactful for developers worldwide."**
+
+We believe in:
+- 🎓 **Hands-on learning** over pure theory
+- 🌍 **Open access** to quality education
+- 💡 **Practical skills** for real-world problems
+- 🤝 **Community-driven** content and collaboration
+- 🚀 **Continuous learning** across all tech domains
+
+Through TFD Workshop, we empower developers and engineers across security, DevOps, cloud, mobile, and architecture - helping you build better, more secure software.
 
 We welcome contributions! Whether it's:
 
@@ -352,12 +350,20 @@ Special thanks to:
 
 ---
 
-## 📅 Upcoming Workshops
+## 📅 Upcoming Workshops & Series
 
 Stay tuned for announcements:
+
+### Container Security (Web Security Series)
 - **Workshop 2:** Image Security (TBA)
 - **Workshop 3:** Runtime Security (TBA)
 - **Workshop 4:** Secrets Management (TBA)
+- **Workshop 5-7:** Coming soon
+
+### Future Series
+- 🔐 **API Security Series** - RESTful API security, GraphQL security
+- 🔑 **Authentication Series** - OAuth, JWT, SSO, MFA
+- 🔧 **DevOps Series** - CI/CD security, IaC best practices
 
 Follow us on social media for updates! 📢
 
@@ -365,9 +371,7 @@ Follow us on social media for updates! 📢
 
 ## 🎯 Our Mission
 
-**"Making container security accessible, practical, and understandable for everyone."**
-
-We believe that security should not be an afterthought. Through hands-on education and practical examples, we empower developers and engineers to build secure containerized applications from day one.
+**"Making technology education accessible, practical, and impactful for developers worldwide."**
 
 ---
 
@@ -376,7 +380,7 @@ We believe that security should not be an afterthought. Through hands-on educati
 **TFDevs - Teaching for Development**
 
 - 🌐 Website: [tfdevs.com](https://tfdevs.com)
-- 📧 Email: contact@tfdevs.com
+- 📧 Email: info@tfdevs.com
 - 🎥 YouTube: [@tfdevs](https://youtube.com/@tfdevs)
 - 📘 Facebook: [TFDevs](https://facebook.com/teachingfordevelopment)
 
@@ -384,14 +388,12 @@ We believe that security should not be an afterthought. Through hands-on educati
 
 <div align="center">
 
-**⭐ Star this repo if you find it helpful!**
+**⭐ Star this repo to stay updated on new workshops and series!**
 
-**🔔 Watch for updates on new workshops**
+**🔔 Watch for announcements across all TFD Workshop series**
 
-**🤝 Contribute to help others learn**
+**🤝 Contribute to help developers worldwide learn and grow**
 
-Made with ❤️ by [TFDevs](https://tfdevs.com)
-
-[⬆ Back to Top](#container-security-workshop-series-)
+[⬆ Back to Top](#tfd-workshop-)
 
 </div>
