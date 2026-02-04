@@ -510,140 +510,24 @@ docker run --rm ubuntu sysctl -a | head -20
 
 ## 🔬 Hands-On Exercises
 
-### Lab Setup
+Ready to practice what you've learned? Complete the hands-on exercises to reinforce these concepts.
 
-Create a file `lab-setup.sh`:
+**[📖 View Hands-On Exercises →](../exercises/hands-on-lab.md)**
 
+The exercises include:
+- **Exercise 1:** Verify Shared Kernel
+- **Exercise 2:** Inspect Process Tree
+- **Exercise 3:** Explore Namespaces
+- **Exercise 4:** What's Shared vs Isolated
+- **Exercise 5:** Understanding Container Boundaries
+
+**[🚀 Lab Setup Script →](../scripts/lab-setup.sh)**
+
+Run the setup script to prepare your environment:
 ```bash
-#!/bin/bash
-
-echo "Setting up Container Security Lab 1..."
-
-# Pull required images
-docker pull ubuntu:latest
-docker pull alpine:latest
-docker pull nginx:latest
-
-# Create demo containers
-docker run -d --name web1 nginx
-docker run -d --name web2 nginx
-docker run -d --name alpine-demo alpine sleep 3600
-
-echo "Lab setup complete!"
-echo ""
-echo "Available containers:"
-docker ps --format "table {{.Names}}\t{{.Image}}\t{{.Status}}"
+chmod +x ../scripts/lab-setup.sh
+../scripts/lab-setup.sh
 ```
-
----
-
-### Exercise 1: Verify Shared Kernel
-
-**Task:** Prove that all containers share the same kernel.
-
-```bash
-# 1. Check your host kernel version
-uname -r
-
-# 2. Run these three commands and compare:
-docker run --rm ubuntu uname -r
-docker run --rm alpine uname -r
-docker exec web1 uname -r
-
-# 3. Observe the results
-```
-
-**What you should see:** All commands show the same kernel version because containers share the host's kernel.
-
----
-
-### Exercise 2: Inspect Process Tree
-
-**Task:** View container processes from both inside and outside.
-
-```bash
-# 1. Get the container's host PID
-docker inspect -f '{{.State.Pid}}' web1
-
-# 2. View process from host
-ps aux | grep nginx
-
-# 3. View process from inside container
-docker exec web1 ps aux
-
-# 4. What's different about the PID?
-#    Host: Shows actual system PID (e.g., 15234)
-#    Container: Shows virtualized PID (usually PID 1)
-
-# 5. Check parent process
-HOST_PID=$(docker inspect -f '{{.State.Pid}}' web1)
-ps -p $HOST_PID -o pid,ppid,command
-
-# Question: What's the parent PID? 
-# 4. What's the difference between the PIDs?
-#    Host: Shows actual system PID (e.g., 15234)
-#    Container: Shows virtualized PID (usually PID 1)
-
-# 5. Check parent process
-HOST_PID=$(docker inspect -f '{{.State.Pid}}' web1)
-ps -p $HOST_PID -o pid,ppid,command
-
-# What's the parent PID? It should be dockerd or containerd
-```
-
----
-
-### Exercise 3: Explore /proc Filesystem
-
-**Task:** Identify what's shared vs isolated.
-
-```bash
-# 1. Enter the alpine container
-docker exec -it alpine-demo sh
-
-# 2. Inside container, run these commands:
-cat /proc/version        # Kernel version (shared)
-cat /proc/cpuinfo        # CPU info (shared)
-hostname                 # Hostname (isolated)
-cat /proc/meminfo        # Memory info (shared but limited)
-ip addr                  # Network (isolated)
-
-# 3. Exit container and compare with host:
-exit
-cat /proc/version
-hostname
-ip addr
-```
-
-**What you should observe:**
-- **Shared:** Kernel version, CPU info, kernel parameters
-- **Isolated:** Hostname, network interfaces, process tree, mount points
-
----
-
-### Exercise 4: Understanding Container Boundaries
-
-**Task:** See how container permissions work (safely).
-
-```bash
-# 1. Run a container with host filesystem access
-docker run -it --rm -v /:/host ubuntu bash
-
-# 2. Inside container:
-ls /host
-# You can see the ENTIRE host filesystem!
-
-cd /host/root
-ls -la
-# Access depends on container privileges
-
-# 3. Exit and observe
-exit
-
-# This demonstrates: containers are only as secure as you configure them
-```
-
-**Reflection:** What could happen if a malicious container had this level of access?
 
 ---
 
