@@ -182,12 +182,6 @@ sequenceDiagram
     SharedKernel->>Container3: 5. Access Container 3
     
     Note over SharedKernel: ⚠️ Single kernel = Single point of failure
-    
-    style SharedKernel fill:#ff6b6b,color:#fff
-    style Host fill:#ff9999
-    style Container1 fill:#ffcc99
-    style Container2 fill:#ff9999
-    style Container3 fill:#ff9999
 ```
 
 **Example: CVE-2022-0847 (Dirty Pipe)**
