@@ -31,21 +31,14 @@ This is **Reinforcement Learning** in a nutshell. An **agent** (the dog) learns 
 
 ### The RL Framework
 
-```mermaid
-graph LR
-    A[Agent<br/>🤖] -->|Action a| B[Environment<br/>🌍]
-    B -->|State s, Reward r| A
-    
-    style A fill:#4CAF50,stroke:#2E7D32,color:#fff
-    style B fill:#2196F3,stroke:#1565C0,color:#fff
-```
+<img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*L2rL_mxm5P00wXRz.jpg" alt="RL Framework" width="600"/>
 
 **Key Components:**
 
 | Component | Symbol | Description | Real-World Example |
 |-----------|--------|-------------|-------------------|
-| **Agent** | $\pi$ | The learner making decisions | You playing a video game |
-| **Environment** | $\mathcal{E}$ | The world the agent interacts with | The video game itself |
+| **Agent** |   | The learner making decisions | You playing a video game |
+| **Environment** | | The world the agent interacts with | The video game itself |
 | **State** | $s$ | Current situation | Your character's position, health, items |
 | **Action** | $a$ | Choice made by the agent | Move left, jump, attack |
 | **Reward** | $r$ | Feedback signal | Points gained, damage taken |
