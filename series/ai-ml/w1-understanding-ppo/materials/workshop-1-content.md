@@ -66,7 +66,7 @@ A **state** $s$ is a complete description of the world. There is no hidden infor
 - **Observation**: What the agent actually sees - might be the same as state (fully observed) or limited sensor readings (partially observed)
 
 <div align="center">
-<img src="https://elegantrl.readthedocs.io/en/latest/_images/LunarLander.gif" alt="Lunar Lander" width="600"/>
+<img src="../assets/gifs/LunarLander.gif" alt="Lunar Lander" width="600"/>
 </div>
 
 *Figure 2: Lunar Lander environment - The agent must learn to control the spacecraft's engines to achieve a safe landing.* [Source](https://elegantrl.readthedocs.io/en/latest/tutorial/LunarLanderContinuous-v2.html)
@@ -1552,19 +1552,19 @@ PPO works across a wide variety of environments! Here's a visual tour of popular
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/cart_pole.gif" width="200"/><br/>
+<img src="../assets/gifs/cart_pole.gif" width="200"/><br/>
 <b>CartPole</b><br/>
 <i>Balance a pole on a moving cart</i><br/>
 Discrete actions, simple physics
 </td>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/acrobot.gif" width="200"/><br/>
+<img src="../assets/gifs/acrobot.gif" width="200"/><br/>
 <b>Acrobot</b><br/>
 <i>Swing up and balance a double pendulum</i><br/>
 Underactuated control problem
 </td>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/mountain_car.gif" width="200"/><br/>
+<img src="../assets/gifs/mountain_car.gif" width="200"/><br/>
 <b>MountainCar</b><br/>
 <i>Build momentum to reach the goal</i><br/>
 Sparse rewards, delayed gratification
@@ -1572,19 +1572,19 @@ Sparse rewards, delayed gratification
 </tr>
 <tr>
 <td align="center" width="33%">
-<img src="https://ale.farama.org/_images/breakout.gif" width="150"/><br/>
+<img src="../assets/gifs/breakout.gif" width="150"/><br/>
 <b>Breakout (Atari)</b><br/>
 <i>Learn from pixels</i><br/>
 Vision-based RL
 </td>
 <td align="center" width="33%">
-<img src="https://ale.farama.org/_images/pong1.gif" width="150"/><br/>
+<img src="../assets/gifs/pong1.gif" width="150"/><br/>
 <b>Pong (Atari)</b><br/>
 <i>Classic game AI</i><br/>
 Two-player competitive
 </td>
 <td align="center" width="33%">
-<img src="https://ale.farama.org/_images/space_invaders1.gif" width="150"/><br/>
+<img src="../assets/gifs/space_invaders1.gif" width="150"/><br/>
 <b>Space Invaders</b><br/>
 <i>Shoot and dodge</i><br/>
 High-dimensional observation
@@ -1596,14 +1596,14 @@ High-dimensional observation
 
 <table>
 <tr>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/humanoid.gif" width="200"/><br/><b>Humanoid</b><br/><i>Bipedal locomotion</i><br/>21 DOF, complex physics</td>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/ant.gif" width="200"/><br/><b>Ant</b><br/><i>Quadruped walking</i><br/>8 DOF, stable gaits</td>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/half_cheetah.gif" width="200"/><br/><b>HalfCheetah</b><br/><i>Fast running</i><br/>6 DOF, speed optimization</td>
+<td align="center" width="33%"><img src="../assets/gifs/humanoid.gif" width="200"/><br/><b>Humanoid</b><br/><i>Bipedal locomotion</i><br/>21 DOF, complex physics</td>
+<td align="center" width="33%"><img src="../assets/gifs/ant.gif" width="200"/><br/><b>Ant</b><br/><i>Quadruped walking</i><br/>8 DOF, stable gaits</td>
+<td align="center" width="33%"><img src="../assets/gifs/half_cheetah.gif" width="200"/><br/><b>HalfCheetah</b><br/><i>Fast running</i><br/>6 DOF, speed optimization</td>
 </tr>
 <tr>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/hopper.gif" width="200"/><br/><b>Hopper</b><br/><i>One-legged hopping</i><br/>3 DOF, balance challenge</td>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/walker2d.gif" width="200"/><br/><b>Walker2D</b><br/><i>Bipedal walking</i><br/>6 DOF, efficient gait</td>
-<td align="center" width="33%"><img src="https://gymnasium.farama.org/_images/swimmer.gif" width="200"/><br/><b>Swimmer</b><br/><i>Aquatic locomotion</i><br/>2 DOF, fluid dynamics</td>
+<td align="center" width="33%"><img src="../assets/gifs/hopper.gif" width="200"/><br/><b>Hopper</b><br/><i>One-legged hopping</i><br/>3 DOF, balance challenge</td>
+<td align="center" width="33%"><img src="../assets/gifs/walker2d.gif" width="200"/><br/><b>Walker2D</b><br/><i>Bipedal walking</i><br/>6 DOF, efficient gait</td>
+<td align="center" width="33%"><img src="../assets/gifs/swimmer.gif" width="200"/><br/><b>Swimmer</b><br/><i>Aquatic locomotion</i><br/>2 DOF, fluid dynamics</td>
 </tr>
 </table>
 
@@ -1612,19 +1612,19 @@ High-dimensional observation
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/reach.gif" width="200"/><br/>
+<img src="../assets/gifs/reach.gif" width="200"/><br/>
 <b>FetchReach</b><br/>
 <i>Reach target position</i><br/>
 Robot arm control
 </td>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/push.gif" width="200"/><br/>
+<img src="../assets/gifs/push.gif" width="200"/><br/>
 <b>FetchPush</b><br/>
 <i>Push object to target</i><br/>
 Object manipulation
 </td>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/reach1.gif" width="200"/><br/>
+<img src="../assets/gifs/reach1.gif" width="200"/><br/>
 <b>HandReach</b><br/>
 <i>Dexterous manipulation</i><br/>
 24 DOF shadow hand
@@ -1637,13 +1637,13 @@ Object manipulation
 <table>
 <tr>
 <td align="center" width="50%">
-<img src="https://gymnasium.farama.org/_images/bipedal_walker.gif" width="250"/><br/>
+<img src="../assets/gifs/bipedal_walker.gif" width="250"/><br/>
 <b>BipedalWalker</b><br/>
 <i>Walk across rough terrain</i><br/>
 Continuous control, 4 joints
 </td>
 <td align="center" width="50%">
-<img src="https://gymnasium.farama.org/_images/bipedal_walker.gif" width="250"/><br/>
+<img src="../assets/gifs/bipedal_walker.gif" width="250"/><br/>
 <b>BipedalWalker Hardcore</b><br/>
 <i>Navigate obstacles</i><br/>
 Challenging terrain variations
@@ -1651,13 +1651,13 @@ Challenging terrain variations
 </tr>
 <tr>
 <td align="center" width="50%">
-<img src="https://gymnasium.farama.org/_images/car_racing.gif" width="250"/><br/>
+<img src="../assets/gifs/car_racing.gif" width="250"/><br/>
 <b>CarRacing</b><br/>
 <i>Drive on a track</i><br/>
 Vision-based, continuous steering
 </td>
 <td align="center" width="50%">
-<img src="https://gymnasium.farama.org/_images/lunar_lander.gif" width="250"/><br/>
+<img src="../assets/gifs/lunar_lander.gif" width="250"/><br/>
 <b>LunarLander</b><br/>
 <i>Safe spacecraft landing</i><br/>
 <strong>★ Workshop Environment ★</strong>
