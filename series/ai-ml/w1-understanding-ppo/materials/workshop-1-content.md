@@ -105,7 +105,6 @@ How good is it to take action $a$ in state $s$?
 ```math
 Q^\pi(s, a) = \mathbb{E}_{\tau \sim \pi} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s, a_0 = a \right]
 ```
-$$
 
 **Real-World Analogy:**  
 Checking your phone (action) during a meeting (state) has negative value, but checking it during lunch (different state) is fine. Same action, different Q-values!
@@ -193,9 +192,9 @@ Reading a textbook once and throwing it away vs. studying it multiple times. PPO
 
 **PPO said:** "Instead of a hard constraint, let's just clip the updates!"
 
-$$
+```math
 L^{\text{CLIP}}(\theta) = \mathbb{E} \left[ \min \left( r_t(\theta) A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t \right) \right]
-$$
+```
 
 Where:
 - $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}$ is the **probability ratio**
@@ -415,9 +414,9 @@ def collect_rollouts(env, policy, num_steps=2048):
 
 **Generalized Advantage Estimation (GAE)** smoothly balances bias vs variance.
 
-$$
+```math
 A_t = \delta_t + (\gamma \lambda) \delta_{t+1} + (\gamma \lambda)^2 \delta_{t+2} + \cdots
-$$
+```
 
 Where $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ is the **TD error**.
 
@@ -614,9 +613,9 @@ Let's connect the original [PPO paper](https://arxiv.org/abs/1707.06347) to our 
 #### 1. Clipped Surrogate Objective (Paper Equation 7)
 
 **Paper:**
-$$
+```math
 L^{\text{CLIP}}(\theta) = \hat{\mathbb{E}}_t \left[ \min(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t) \right]
-$$
+```
 
 **Our Code:**
 ```python
@@ -638,9 +637,9 @@ If the policy changes too much (ratio > 1.2 or < 0.8), the clipping kicks in and
 #### 2. Value Function Loss (Paper Section 4.1)
 
 **Paper:**
-$$
+```math
 L^{VF}(\theta) = (V_\theta(s_t) - V_t^{\text{targ}})^2
-$$
+```
 
 **Our Code:**
 ```python
@@ -653,9 +652,9 @@ The critic learns to predict returns by minimizing mean squared error between pr
 #### 3. Entropy Bonus (Paper Section 4)
 
 **Paper:**
-$$
+```math
 S[\pi_\theta](s_t)
-$$
+```
 
 **Our Code:**
 ```python
@@ -672,9 +671,9 @@ Like trying different restaurants (high entropy) vs. always going to your favori
 #### 4. Generalized Advantage Estimation (Paper Appendix)
 
 **Paper:**
-$$
+```math
 \hat{A}_t = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}
-$$
+```
 
 **Our Code:**
 ```python
@@ -913,6 +912,7 @@ PPO is used in production for:
 
 ### Additional Resources
 
+- [Mathematics Foundation](../materials/math-foundations.md)
 - [PPO Paper](https://arxiv.org/abs/1707.06347) - Original paper
 - [Spinning Up PPO](https://spinningup.openai.com/en/latest/algorithms/ppo.html) - Detailed guide
 - [CleanRL PPO](https://github.com/vwxyzjn/cleanrl) - Clean implementations

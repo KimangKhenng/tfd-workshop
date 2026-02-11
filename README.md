@@ -32,7 +32,7 @@ Master security in web applications and containerized environments
 #### **[AI & ML Series](./series/ai-ml/README.md)** - *IN PROGRESS*
 Master reinforcement learning and modern AI techniques
 - **Reinforcement Learning** (5 workshops) - Currently running
-  - Workshop 1: Understanding Proximal Policy Optimization (PPO) | [Materials](./series/ai-ml/w1-understanding-ppo/README.md) | [Recording(Coming Soon)](#)
+  - Workshop 1: Understanding Proximal Policy Optimization (PPO) | [Materials](./series/ai-ml/w1-understanding-ppo/materials/workshop-1-content.md) | [Recording(Coming Soon)](#)
   - Workshops 2-5: Coming soon
 
 #### **DevOps Series** - 🔜 Coming Soon
