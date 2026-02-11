@@ -1572,19 +1572,19 @@ Sparse rewards, delayed gratification
 </tr>
 <tr>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/breakout_v4.gif" width="150"/><br/>
+<img src="https://ale.farama.org/_images/breakout.gif" width="150"/><br/>
 <b>Breakout (Atari)</b><br/>
 <i>Learn from pixels</i><br/>
 Vision-based RL
 </td>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/pong_v4.gif" width="150"/><br/>
+<img src="https://ale.farama.org/_images/pong1.gif" width="150"/><br/>
 <b>Pong (Atari)</b><br/>
 <i>Classic game AI</i><br/>
 Two-player competitive
 </td>
 <td align="center" width="33%">
-<img src="https://gymnasium.farama.org/_images/space_invaders_v4.gif" width="150"/><br/>
+<img src="https://ale.farama.org/_images/space_invaders1.gif" width="150"/><br/>
 <b>Space Invaders</b><br/>
 <i>Shoot and dodge</i><br/>
 High-dimensional observation
@@ -1642,19 +1642,19 @@ High-dimensional observation
 <table>
 <tr>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/fetch_reach.gif" width="200"/><br/>
+<img src="https://robotics.farama.org/_images/reach.gif" width="200"/><br/>
 <b>FetchReach</b><br/>
 <i>Reach target position</i><br/>
 Robot arm control
 </td>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/fetch_push.gif" width="200"/><br/>
+<img src="https://robotics.farama.org/_images/push.gif" width="200"/><br/>
 <b>FetchPush</b><br/>
 <i>Push object to target</i><br/>
 Object manipulation
 </td>
 <td align="center" width="33%">
-<img src="https://robotics.farama.org/_images/hand_reach.gif" width="200"/><br/>
+<img src="https://robotics.farama.org/_images/reach1.gif" width="200"/><br/>
 <b>HandReach</b><br/>
 <i>Dexterous manipulation</i><br/>
 24 DOF shadow hand
@@ -1673,7 +1673,7 @@ Object manipulation
 Continuous control, 4 joints
 </td>
 <td align="center" width="50%">
-<img src="https://gymnasium.farama.org/_images/bipedal_walker_hardcore_v3.gif" width="250"/><br/>
+<img src="https://gymnasium.farama.org/_images/bipedal_walker.gif" width="250"/><br/>
 <b>BipedalWalker Hardcore</b><br/>
 <i>Navigate obstacles</i><br/>
 Challenging terrain variations
