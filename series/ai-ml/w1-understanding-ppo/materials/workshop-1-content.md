@@ -90,7 +90,91 @@ The **action space** is the set of all valid actions available to the agent.
 - Example: Robot arm control (joint torques or angles)
 - Example: Self-driving car (steering angle, acceleration)
 
-> **Important**: This distinction has profound consequences for algorithm design. Some RL methods only work with discrete actions, others only with continuous, and some (like PPO) can handle both.
+**Visual Comparison:**
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Discrete Actions** 🎮
+
+<div align="center">
+<img src="../assets/gifs/lunar_lander.gif" width="250"/><br/>
+<b>Lunar Lander</b><br/>
+<i>4 discrete actions: {0: Do nothing, 1: Fire left, 2: Fire main, 3: Fire right}</i>
+</div>
+
+<div align="center">
+<img src="../assets/gifs/breakout.gif" width="200"/><br/>
+<b>Breakout (Atari)</b><br/>
+<i>4 discrete actions: {Noop, Fire, Right, Left}</i>
+</div>
+
+**Characteristics:**
+- Finite, countable choices
+- Natural for categorical decisions
+- Action sampling: Choose from probability distribution
+- Example: `action = [0, 1, 2, 3]` → Sample one
+
+**Code Example:**
+```python
+# Discrete action space
+action_space = gym.spaces.Discrete(4)
+action = action_space.sample()  # Returns: 0, 1, 2, or 3
+
+# Policy outputs probabilities
+probs = [0.1, 0.3, 0.5, 0.1]  # Sum = 1.0
+action = np.random.choice([0,1,2,3], p=probs)
+```
+
+**References:**
+- [Gymnasium Discrete Spaces](https://gymnasium.farama.org/api/spaces/fundamental/#discrete)
+- [Lunar Lander Env Docs](https://gymnasium.farama.org/environments/box2d/lunar_lander/)
+
+</td>
+<td width="50%" valign="top">
+
+**Continuous Actions** 🤖
+
+<div align="center">
+<img src="../assets/gifs/bipedal_walker.gif" width="250"/><br/>
+<b>BipedalWalker</b><br/>
+<i>4 continuous actions: [hip1, knee1, hip2, knee2] ∈ [-1, 1]⁴</i>
+</div>
+
+<div align="center">
+<img src="../assets/gifs/half_cheetah.gif" width="250"/><br/>
+<b>HalfCheetah</b><br/>
+<i>6 continuous actions: joint torques ∈ [-1, 1]⁶</i>
+</div>
+
+**Characteristics:**
+- Infinite, real-valued choices
+- Natural for physical control
+- Action sampling: Draw from continuous distribution (Gaussian)
+- Example: `action = [-0.234, 0.891, 0.156, -0.677]`
+
+**Code Example:**
+```python
+# Continuous action space (Box = multi-dimensional)
+action_space = gym.spaces.Box(low=-1, high=1, shape=(4,))
+action = action_space.sample()  # Returns: array([-0.23, 0.89, ...])
+
+# Policy outputs mean and std
+mean = [0.5, -0.2, 0.8, -0.3]
+std = [0.1, 0.1, 0.1, 0.1]
+action = np.random.normal(mean, std)
+```
+
+**References:**
+- [Gymnasium Box Spaces](https://gymnasium.farama.org/api/spaces/fundamental/#box)
+- [BipedalWalker Env Docs](https://gymnasium.farama.org/environments/box2d/bipedal_walker/)
+
+</td>
+</tr>
+</table>
+
+> **Important**: This distinction has profound consequences for algorithm design. Some RL methods only work with discrete actions (DQN), others only with continuous (DDPG), and some (like **PPO**) can handle both!
 
 #### Policies
 
