@@ -18,102 +18,312 @@ In this workshop, you'll build a solid foundation in Reinforcement Learning by u
 
 ## Part 1: Reinforcement Learning Foundations
 
-### What is Reinforcement Learning?
+### Introduction: What Can RL Do?
 
-Imagine teaching a dog a new trick:
+Reinforcement learning has achieved remarkable successes across diverse domains:
 
-1. **The dog** tries different actions (sit, stay, roll over)
-2. **You** give treats (rewards) when it does the right thing
-3. **Over time**, the dog learns which actions lead to treats
-4. **Eventually**, the dog masters the trick!
+- **Game Playing**: Mastering complex strategy games like Go (AlphaGo), Dota 2 (OpenAI Five), and playing Atari games from raw pixels
+- **Robotics**: Teaching robots to walk, manipulate objects, and perform complex tasks in both simulation and the real world
+- **Control Systems**: Optimizing energy usage, traffic management, and industrial control
+- **Personalization**: Recommendation systems, dialogue agents, and adaptive interfaces
 
-This is **Reinforcement Learning** in a nutshell. An **agent** (the dog) learns to take **actions** in an **environment** (your home) to maximize **rewards** (treats).
+These achievements stem from a simple but powerful idea: **learning through trial and error**.
 
-### The RL Framework
+### The RL Framework: Agent and Environment
+
+Imagine teaching a dog a new trick. The dog tries different actions, you give treats when it does the right thing, and over time the dog learns which actions lead to treats. This is reinforcement learning in a nutshell.
+
+**Visual Overview:**
 
 <div align="center">
 <img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*L2rL_mxm5P00wXRz.jpg" alt="RL Framework" width="600"/>
 </div>
 
-**Key Components:**
+*Figure 1: The Reinforcement Learning feedback loop - Agent observes state, takes action, receives reward, and environment transitions to new state.* [Source](https://www.kdnuggets.com/2018/03/5-things-reinforcement-learning.html)
 
-| Component | Symbol | Description | Real-World Example |
-|-----------|--------|-------------|-------------------|
-| **Agent** |   | The learner making decisions | You playing a video game |
-| **Environment** | | The world the agent interacts with | The video game itself |
-| **State** | $s$ | Current situation | Your character's position, health, items |
-| **Action** | $a$ | Choice made by the agent | Move left, jump, attack |
-| **Reward** | $r$ | Feedback signal | Points gained, damage taken |
-| **Policy** | $\pi(a\|s)$ | Strategy for choosing actions | Your gameplay strategy |
+**The main characters of RL are:**
 
-### The Goal of RL
+1. **The Agent**: The learner and decision maker (e.g., the dog, a robot, an AI playing a game)
+2. **The Environment**: The world the agent lives in and interacts with (e.g., your home, a physical space, a video game)
 
-**Maximize cumulative reward over time:**
+**The interaction loop:**
+- At each step, the agent sees an **observation** of the environment's state
+- Based on this, the agent decides on an **action** to take
+- The environment changes (possibly in response to the agent's action)
+- The agent receives a **reward** signal indicating how good or bad the outcome was
+- The goal: learn a strategy that **maximizes cumulative reward** over time
 
-$$
-J(\pi) = \mathbb{E}_{\tau \sim \pi} \left[ \sum_{t=0}^{T} \gamma^t r_t \right]
-$$
+### Key Concepts and Terminology
 
-**Breaking this down:**
-- $J(\pi)$: Total expected reward from policy $\pi$
-- $\mathbb{E}_{\tau \sim \pi}$: Expected value over trajectories following policy $\pi$
-- $\sum_{t=0}^{T}$: Sum rewards from time 0 to T
-- $\gamma^t$: Discount factor (future rewards matter less than immediate ones)
-- $r_t$: Reward at time $t$
+Let's build up the concepts systematically, starting from the basics.
 
-**Real-World Analogy:**  
-Like planning your career: immediate rewards (salary) matter, but so do future rewards (promotions, retirement). The discount factor $\gamma$ is like saying "a dollar today is worth more than a dollar next year."
+#### States and Observations
 
-### Key Concepts
+A **state** $s$ is a complete description of the world. There is no hidden information. An **observation** $o$ is a partial description that may omit some information.
 
-#### 1. Policy ($\pi$)
+**Example: Lunar Landing**
+- **State**: Exact position, velocity, angle, angular velocity, and leg contact status of the lander
+- **Observation**: What the agent actually sees - might be the same as state (fully observed) or limited sensor readings (partially observed)
 
-A **policy** is your strategy for choosing actions.
+<div align="center">
+<img src="https://elegantrl.readthedocs.io/en/latest/_images/LunarLander.gif" alt="Lunar Lander" width="600"/>
+</div>
 
-**Deterministic Policy:**
-```math
-a = \pi(s)
-```
-"Always do X when you see Y" → Like always braking when you see a red light
+*Figure 2: Lunar Lander environment - The agent must learn to control the spacecraft's engines to achieve a safe landing.* [Source](https://elegantrl.readthedocs.io/en/latest/tutorial/LunarLanderContinuous-v2.html)
 
-**Stochastic Policy:**
-```math
-a \sim \pi(a|s)
-```
-"Do X with 70% probability, Y with 30%" → Like a basketball player sometimes shooting, sometimes passing
+In deep RL, we typically represent states and observations as **vectors, matrices, or tensors** of real numbers:
+- Visual observations: RGB pixel matrices
+- Robot state: Joint angles and velocities
+- Game state: Character positions, health, resources
 
-#### 2. Value Function ($V$)
+> **Note**: In RL notation, we often use $s$ (state) even when technically referring to observations, especially when describing how the agent makes decisions. The agent can only act on what it observes, not the full state it can't see.
 
-How good is it to be in a state?
+#### Action Spaces
 
-```math
-V^\pi(s) = \mathbb{E}_{\tau \sim \pi} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s \right]
-```
+The **action space** is the set of all valid actions available to the agent.
 
-**Real-World Analogy:**  
-Being in a good neighborhood (state) means good things are likely to happen in the future (high value), even if nothing special is happening right now.
+**Discrete Action Spaces**: A finite number of distinct actions
+- Example: Lunar Lander has 4 actions (do nothing, fire left engine, fire main engine, fire right engine)
+- Example: Chess has a finite (though large) set of legal moves
 
-#### 3. Q-Function (Action-Value)
+**Continuous Action Spaces**: Actions are real-valued vectors
+- Example: Robot arm control (joint torques or angles)
+- Example: Self-driving car (steering angle, acceleration)
 
-How good is it to take action $a$ in state $s$?
+> **Important**: This distinction has profound consequences for algorithm design. Some RL methods only work with discrete actions, others only with continuous, and some (like PPO) can handle both.
+
+#### Policies
+
+A **policy** is the agent's behavior - a rule for selecting actions. It's essentially the agent's brain.
+
+**Deterministic Policy** $\mu$: Always outputs the same action for a given state
 
 ```math
-Q^\pi(s, a) = \mathbb{E}_{\tau \sim \pi} \left[ \sum_{t=0}^{\infty} \gamma^t r_t \mid s_0 = s, a_0 = a \right]
+a_t = \mu(s_t)
 ```
 
-**Real-World Analogy:**  
-Checking your phone (action) during a meeting (state) has negative value, but checking it during lunch (different state) is fine. Same action, different Q-values!
+**Real-World Analogy**: Always braking when you see a red light
 
-#### 4. Advantage Function ($A$)
-
-How much better is action $a$ compared to average?
+**Stochastic Policy** $\pi$: Outputs a probability distribution over actions
 
 ```math
-A^\pi(s, a) = Q^\pi(s, a) - V^\pi(s)
+a_t \sim \pi(\cdot | s_t)
 ```
 
-**Real-World Analogy:**  
-If average students score 70% and you score 85%, your **advantage** is +15%. It measures how much better you did than expected.
+**Real-World Analogy**: A basketball player sometimes shoots (60%), sometimes passes (30%), sometimes dribbles (10%) depending on the game situation
+
+In deep RL, policies are **parameterized** - their behavior depends on parameters $\theta$ (e.g., neural network weights). We write $\pi_\theta$ or $\mu_\theta$ to highlight this dependency. We can adjust these parameters through optimization to change the agent's behavior.
+
+**Two types of stochastic policies are most common:**
+
+1. **Categorical Policies** (discrete actions): Like a classifier over actions
+   - Neural network outputs logits for each action
+   - Apply softmax to get probabilities
+   - Sample action from this distribution
+
+2. **Diagonal Gaussian Policies** (continuous actions): Output a mean action vector
+   - Neural network outputs mean actions $\mu_\theta(s)$
+   - Standard deviations $\sigma$ either learned separately or also output by network
+   - Sample: $a = \mu_\theta(s) + \sigma \odot z$ where $z \sim \mathcal{N}(0,I)$
+
+#### Trajectories
+
+A **trajectory** $\tau$ (also called an **episode** or **rollout**) is a sequence of states and actions:
+
+```math
+\tau = (s_0, a_0, s_1, a_1, s_2, a_2, ...)
+```
+
+**How trajectories are generated:**
+
+1. Initial state $s_0$ is sampled from a start-state distribution: $s_0 \sim \rho_0(\cdot)$
+2. Actions come from the agent's policy: $a_t \sim \pi(\cdot|s_t)$
+3. State transitions follow environment dynamics:
+   - Deterministic: $s_{t+1} = f(s_t, a_t)$
+   - Stochastic: $s_{t+1} \sim P(\cdot|s_t, a_t)$
+
+The agent influences the world through its actions, but doesn't control how the world responds.
+
+#### Reward and Return
+
+The **reward function** $R$ is the feedback signal. It depends on the current state, action taken, and/or next state:
+
+```math
+r_t = R(s_t, a_t, s_{t+1})
+```
+
+Often simplified to $r_t = R(s_t)$ or $r_t = R(s_t, a_t)$.
+
+**The goal**: Maximize cumulative reward. But what does "cumulative" mean exactly? There are different formulations:
+
+**Finite-Horizon Undiscounted Return**: Sum of rewards over a fixed window
+
+```math
+R(\tau) = \sum_{t=0}^{T} r_t
+```
+
+**Infinite-Horizon Discounted Return**: Sum of all future rewards with exponential decay
+
+```math
+R(\tau) = \sum_{t=0}^{\infty} \gamma^t r_t
+```
+
+Where $\gamma \in (0,1)$ is the **discount factor**.
+
+**Why discount?**
+- **Intuitive**: A reward now is worth more than the same reward later (like money and interest rates)
+- **Mathematical**: Ensures the infinite sum converges to a finite value
+- **Practical**: Models uncertainty about the distant future
+
+> **Note**: Deep RL practice often blurs these distinctions - we might optimize undiscounted return but use discount factors when estimating value functions.
+
+#### The RL Problem: Finding the Optimal Policy
+
+The **central optimization problem** in RL is finding a policy that maximizes expected return:
+
+```math
+\pi^* = \arg \max_{\pi} J(\pi)
+```
+
+Where $J(\pi)$ is the **expected return** when following policy $\pi$:
+
+```math
+J(\pi) = \mathbb{E}_{\tau \sim \pi}[R(\tau)]
+```
+
+**Breaking this down**: 
+- Trajectories are random (stochastic policy and/or environment)
+- Different trajectories have different returns
+- We want the policy that gives the highest average return across all possible trajectories
+
+**The probability of a trajectory** under policy $\pi$ is:
+
+```math
+P(\tau|\pi) = \rho_0(s_0) \prod_{t=0}^{T-1} P(s_{t+1}|s_t,a_t) \pi(a_t|s_t)
+```
+
+This combines:
+- Initial state distribution $\rho_0(s_0)$
+- Environment dynamics $P(s_{t+1}|s_t,a_t)$ at each step
+- Policy action probabilities $\pi(a_t|s_t)$ at each step
+
+#### Value Functions
+
+**Value functions** estimate how good states or state-action pairs are. They're used in nearly every RL algorithm.
+
+**1. State-Value Function** $V^\pi(s)$: Expected return starting from state $s$ and following policy $\pi$
+
+```math
+V^\pi(s) = \mathbb{E}_{\tau \sim \pi}[R(\tau) | s_0 = s]
+```
+
+**Real-World Analogy**: Being in a good neighborhood (state) means good things are likely to happen in the future, even if nothing special is happening right now.
+
+**2. Action-Value Function** $Q^\pi(s,a)$: Expected return starting from state $s$, taking action $a$, then following $\pi$
+
+```math
+Q^\pi(s,a) = \mathbb{E}_{\tau \sim \pi}[R(\tau) | s_0 = s, a_0 = a]
+```
+
+**Real-World Analogy**: Checking your phone (action) during a meeting (state) has negative value, but checking it during lunch (different state) might be fine. Same action, different Q-values!
+
+**3. Optimal Value Function** $V^*(s)$: Expected return from state $s$ under the best possible policy
+
+```math
+V^*(s) = \max_{\pi} \mathbb{E}_{\tau \sim \pi}[R(\tau) | s_0 = s]
+```
+
+**4. Optimal Action-Value Function** $Q^*(s,a)$: Expected return from taking action $a$ in state $s$, then following the best policy
+
+```math
+Q^*(s,a) = \max_{\pi} \mathbb{E}_{\tau \sim \pi}[R(\tau) | s_0 = s, a_0 = a]
+```
+
+**Key relationships:**
+
+```math
+V^\pi(s) = \mathbb{E}_{a \sim \pi}[Q^\pi(s,a)]
+```
+
+```math
+V^*(s) = \max_a Q^*(s,a)
+```
+
+**The Optimal Q-Function and Optimal Action**: If we know $Q^*(s,a)$, we can directly obtain the optimal action:
+
+```math
+a^*(s) = \arg\max_a Q^*(s,a)
+```
+
+Simply pick the action with the highest Q-value!
+
+#### Advantage Function
+
+The **advantage function** $A^\pi(s,a)$ tells us the relative benefit of taking action $a$ in state $s$ compared to following the policy:
+
+```math
+A^\pi(s,a) = Q^\pi(s,a) - V^\pi(s)
+```
+
+**Interpretation:**
+- $A^\pi(s,a) > 0$: Action $a$ is better than average
+- $A^\pi(s,a) < 0$: Action $a$ is worse than average
+- $A^\pi(s,a) = 0$: Action $a$ is exactly average
+
+**Real-World Analogy**: If average students score 70% and you score 85%, your advantage is +15%. It measures how much better you did than expected.
+
+> **Important**: The advantage function is crucial for policy gradient methods like PPO. It tells us which actions to reinforce and which to discourage.
+
+#### Bellman Equations
+
+Value functions satisfy special **self-consistency** equations called Bellman equations. The key insight:
+
+> *The value of your starting point is the immediate reward you expect plus the value of where you land next.*
+
+**For on-policy value functions:**
+
+```math
+V^\pi(s) = \mathbb{E}_{a \sim \pi, s' \sim P}[r(s,a) + \gamma V^\pi(s')]
+```
+
+```math
+Q^\pi(s,a) = \mathbb{E}_{s' \sim P}[r(s,a) + \gamma \mathbb{E}_{a' \sim \pi}[Q^\pi(s',a')]]
+```
+
+**For optimal value functions:**
+
+```math
+V^*(s) = \max_a \mathbb{E}_{s' \sim P}[r(s,a) + \gamma V^*(s')]
+```
+
+```math
+Q^*(s,a) = \mathbb{E}_{s' \sim P}[r(s,a) + \gamma \max_{a'} Q^*(s',a')]
+```
+
+The key difference: optimal Bellman equations include $\max$ over actions, reflecting that the optimal policy always chooses the best action.
+
+> **Note**: A "Bellman backup" refers to the right-hand side of a Bellman equation - computing the reward-plus-next-value.
+
+---
+
+### Summary: The RL Setup
+
+| Component | Symbol | Description |
+|-----------|--------|-------------|
+| **Agent** | - | The learner making decisions |
+| **Environment** | - | The world the agent interacts with |
+| **State** | $s$ | Complete description of the world |
+| **Observation** | $o$ | What the agent actually sees |
+| **Action** | $a$ | Choice made by the agent |
+| **Reward** | $r$ | Immediate feedback signal |
+| **Policy** | $\pi(a\|s)$ | Agent's behavior (action selection rule) |
+| **Trajectory** | $\tau$ | Sequence of states and actions |
+| **Return** | $R(\tau)$ | Cumulative reward over a trajectory |
+| **Value Function** | $V^\pi(s)$ | Expected return from a state |
+| **Action-Value** | $Q^\pi(s,a)$ | Expected return from a state-action pair |
+| **Advantage** | $A^\pi(s,a)$ | How much better is action $a$ than average |
+
+**The RL Objective**: Find the policy $\pi^*$ that maximizes expected return $J(\pi) = \mathbb{E}_{\tau \sim \pi}[R(\tau)]$
 
 ---
 
@@ -220,9 +430,9 @@ PPO: "Just don't go more than 10% faster or slower than you were going. Simple!"
 
 ## Part 3: PPO Implementation Walkthrough
 
-Now let's build PPO step-by-step! We'll train an agent to land a lunar lander.
+Now let's build PPO piece by piece, understanding each component before adding complexity.
 
-### Environment: Lunar Landing
+### Our Target Environment: Lunar Landing
 
 ```mermaid
 graph TB
@@ -237,257 +447,660 @@ graph TB
     style C fill:#FF9800,stroke:#F57C00,color:#fff
 ```
 
-**Why This Environment?**
-- Continuous physics simulation
-- Clear success/failure criteria
-- Visual feedback
-- Not too easy, not too hard
-- Fast to train (~10-30 minutes)
+**Why This Environment?** Clear success/failure, visual feedback, fast training (~10-30 minutes), not too easy or hard.
 
-### Architecture Overview
+---
+
+### Building Block 1: The Policy Network (Actor)
+
+**Mathematical Foundation:**  
+Recall the stochastic policy: $a_t \sim \pi_\theta(\cdot|s_t)$
+
+For discrete actions, we use a **categorical policy**:
+
+```math
+\pi_\theta(a|s) = \text{softmax}(\text{logits}_\theta(s))_a
+```
+
+**Implementation - Just the Actor:**
+
+```python
+import torch.nn as nn
+
+class PolicyNetwork(nn.Module):
+    def __init__(self, state_dim, action_dim, hidden_dim=64):
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, action_dim)  # Outputs logits
+        )
+```
+
+**What This Does:**  
+State (8 numbers) → Hidden Layer (64 neurons) → Action Logits (4 numbers)
+
+**Real-World Analogy:**  
+Your brain seeing a situation (state) and generating preferences (logits) for different actions: "I feel 3.2 units toward braking, 1.5 toward accelerating..."
+
+---
+
+### Building Block 2: Sampling Actions
+
+**Mathematical Foundation:**  
+Need to sample $a \sim \pi_\theta(\cdot|s)$ and compute $\log \pi_\theta(a|s)$ for training.
+
+**Why Log Probability?**  
+Gradient of log probability has nice mathematical properties:
+
+```math
+\nabla_\theta \log \pi_\theta(a|s) = \frac{\nabla_\theta \pi_\theta(a|s)}{\pi_\theta(a|s)}
+```
+
+**Adding to Our Policy:**
+
+```python
+import torch.nn.functional as F
+
+class PolicyNetwork(nn.Module):
+    # ... (previous __init__ code)
+    
+    def get_action(self, state):
+        logits = self.network(state)
+        probs = F.softmax(logits, dim=-1)  # Convert to probabilities
+        dist = torch.distributions.Categorical(probs)
+        action = dist.sample()  # Sample from distribution
+        log_prob = dist.log_prob(action)  # For training
+        return action, log_prob
+```
+
+**Step by Step:**
+1. Network outputs raw scores (logits): `[2.1, 0.5, -1.2, 0.8]`
+2. Softmax converts to probabilities: `[0.52, 0.11, 0.02, 0.15]`
+3. Sample action: might get action 0 with 52% probability
+4. Compute log prob: $\log(0.52) = -0.65$
+
+---
+
+### Building Block 3: The Value Network (Critic)
+
+**Mathematical Foundation:**  
+The critic estimates: $V^\pi(s) = \mathbb{E}[R(\tau)|s_0=s]$
+
+**Why We Need This:**  
+To compute advantages $A(s,a) = Q(s,a) - V(s)$ without storing Q-values for all actions.
+
+**Separate Network (for now):**
+
+```python
+class ValueNetwork(nn.Module):
+    def __init__(self, state_dim, hidden_dim=64):
+        super().__init__()
+        self.network = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1)  # Single value output
+        )
+    
+    def forward(self, state):
+        return self.network(state).squeeze()
+```
+
+**What This Predicts:**  
+"From this state, I expect to get +42.7 total reward in the future"
+
+---
+
+### Building Block 4: Combining Actor and Critic
+
+**Design Choice:**  
+Share early layers (common feature extraction) but separate heads.
 
 ```mermaid
 graph LR
-    A[State<br/>8 values] --> B[Shared Network<br/>64 → 64]
+    A[State<br/>8 values] --> B[Shared Layers<br/>64 neurons]
     B --> C[Actor Head<br/>4 actions]
     B --> D[Critic Head<br/>1 value]
-    
-    C --> E[Action<br/>Distribution]
-    D --> F[State<br/>Value]
     
     style A fill:#2196F3,stroke:#1565C0,color:#fff
     style B fill:#9C27B0,stroke:#6A1B9A,color:#fff
     style C fill:#4CAF50,stroke:#2E7D32,color:#fff
     style D fill:#FF9800,stroke:#F57C00,color:#fff
-    style E fill:#4CAF50,stroke:#2E7D32,color:#fff
-    style F fill:#FF9800,stroke:#F57C00,color:#fff
 ```
 
-### Implementation Steps
-
-#### Step 1: Define the Neural Network
+**Implementation:**
 
 ```python
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
 class ActorCritic(nn.Module):
-    """
-    Actor-Critic Network for PPO
-    
-    Actor: Decides what action to take (policy)
-    Critic: Evaluates how good the current state is (value function)
-    """
     def __init__(self, state_dim, action_dim, hidden_dim=64):
-        super(ActorCritic, self).__init__()
-        
-        # Shared feature extraction layers
-        # Real-world analogy: Common knowledge used for both decision-making and evaluation
+        super().__init__()
+        # Shared feature extraction
         self.shared = nn.Sequential(
             nn.Linear(state_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU()
         )
-        
-        # Actor head: outputs action probabilities
-        # Like your brain deciding "70% chance I should brake, 30% chance I should accelerate"
+        # Separate heads
         self.actor = nn.Linear(hidden_dim, action_dim)
-        
-        # Critic head: outputs state value
-        # Like evaluating "being in this situation is worth +5 points on average"
         self.critic = nn.Linear(hidden_dim, 1)
-        
-    def forward(self, state):
-        """Forward pass through the network"""
-        features = self.shared(state)
-        
-        # Actor output: action logits (before softmax)
-        action_logits = self.actor(features)
-        
-        # Critic output: state value
-        state_value = self.critic(features)
-        
-        return action_logits, state_value
     
-    def get_action(self, state, deterministic=False):
-        """
-        Sample an action from the policy
-        
-        Args:
-            state: Current environment state
-            deterministic: If True, always pick best action (for evaluation)
-        
-        Returns:
-            action: Chosen action
-            log_prob: Log probability of that action
-            value: Estimated state value
-        """
-        action_logits, state_value = self.forward(state)
-        
-        # Create probability distribution over actions
-        action_probs = F.softmax(action_logits, dim=-1)
-        dist = torch.distributions.Categorical(action_probs)
-        
-        if deterministic:
-            # For evaluation: always pick most likely action
-            action = torch.argmax(action_probs, dim=-1)
-        else:
-            # For training: sample from distribution
-            action = dist.sample()
-        
-        # Log probability of the action (needed for PPO loss)
-        log_prob = dist.log_prob(action)
-        
-        return action, log_prob, state_value
+    def forward(self, state):
+        features = self.shared(state)
+        return self.actor(features), self.critic(features)
 ```
 
-#### Step 2: Collect Rollout Data
+**Why Share?**  
+Both actor and critic need to understand the state. Sharing parameters is more efficient and can improve learning.
+
+---
+
+### Building Block 5: Collecting Experience
+
+**What We Need:**  
+Tuples of $(s_t, a_t, r_t, s_{t+1}, \text{done}_t)$ to learn from.
+
+**Algorithm:**
+1. Start in state $s_0$
+2. Get action from policy: $a_t \sim \pi_\theta(\cdot|s_t)$
+3. Execute action, observe $r_t, s_{t+1}$
+4. Store transition
+5. Repeat
+
+**Key Code Snippet:**
 
 ```python
-def collect_rollouts(env, policy, num_steps=2048):
-    """
-    Collect experience by running the policy in the environment
-    
-    Real-world analogy: Like recording yourself playing a game
-    to analyze your decisions later
-    
-    Args:
-        env: Gymnasium environment
-        policy: Actor-Critic network
-        num_steps: Number of environment steps to collect
-    
-    Returns:
-        Dictionary containing states, actions, rewards, values, log_probs
-    """
-    states = []
-    actions = []
-    rewards = []
-    dones = []
-    values = []
-    log_probs = []
-    
+def collect_rollouts(env, policy, num_steps):
+    data = []
     state, _ = env.reset()
     
-    for step in range(num_steps):
-        # Convert state to tensor
-        state_tensor = torch.FloatTensor(state).unsqueeze(0)
+    for _ in range(num_steps):
+        state_tensor = torch.FloatTensor(state)
+        action, log_prob = policy.get_action(state_tensor)
         
-        # Get action from policy
-        with torch.no_grad():  # No gradients needed during data collection
-            action, log_prob, value = policy.get_action(state_tensor)
+        next_state, reward, done, _, _ = env.step(action.item())
         
-        # Take action in environment
-        next_state, reward, terminated, truncated, _ = env.step(action.item())
-        done = terminated or truncated
+        data.append({
+            'state': state,
+            'action': action.item(),
+            'reward': reward,
+            'log_prob': log_prob.item(),
+            'done': done
+        })
         
-        # Store transition
-        states.append(state)
-        actions.append(action.item())
-        rewards.append(reward)
-        dones.append(done)
-        values.append(value.item())
-        log_probs.append(log_prob.item())
+        state = next_state if not done else env.reset()[0]
+    
+    return data
+```
+
+---
+
+### Building Block 6: Computing Returns and Advantages
+
+**Mathematical Foundation:**  
+We need advantages: $A_t = Q(s_t, a_t) - V(s_t)$
+
+But we don't have Q! **Solution**: Use the Bellman equation:
+
+```math
+Q(s_t,a_t) \approx r_t + \gamma V(s_{t+1})
+```
+
+So:
+```math
+A_t \approx r_t + \gamma V(s_{t+1}) - V(s_t) = \delta_t \text{ (TD error)}
+```
+
+**Generalized Advantage Estimation (GAE):**  
+Instead of just one-step TD error, blend multiple steps:
+
+```math
+A_t^{\text{GAE}} = \delta_t + \gamma\lambda\delta_{t+1} + (\gamma\lambda)^2\delta_{t+2} + \cdots
+```
+
+**Parameters:**
+- $\lambda = 0$: Only one-step TD (high bias, low variance)
+- $\lambda = 1$: Full Monte Carlo (low bias, high variance)
+- $\lambda = 0.95$: Sweet spot (GAE's default)
+
+**Implementation:**
+
+```python
+def compute_advantages(rewards, values, dones, gamma=0.99, lambda_=0.95):
+    advantages = []
+    last_advantage = 0
+    
+    # Work backwards through time
+    for t in reversed(range(len(rewards))):
+        # Next value (0 if episode ended)
+        next_value = values[t+1] if t+1 < len(values) else 0
+        next_value = next_value * (1 - dones[t])
         
-        state = next_state
+        # TD error: δ = r + γV(s') - V(s)
+        delta = rewards[t] + gamma * next_value - values[t]
         
-        if done:
-            state, _ = env.reset()
+        # GAE: A = δ + γλA_next
+        advantage = delta + gamma * lambda_ * (1 - dones[t]) * last_advantage
+        
+        advantages.insert(0, advantage)
+        last_advantage = advantage
+    
+    return advantages
+```
+
+**What This Does:**  
+Each advantage is a weighted sum of TD errors: immediate corrections plus future corrections (decayed).
+
+---
+
+### Building Block 7: The PPO Objective
+
+**Core Idea:**  
+Update policy to increase probability of good actions (positive advantage), decrease bad actions (negative advantage).
+
+**Vanilla Policy Gradient:**
+
+```math
+L^{PG}(\theta) = \mathbb{E}[\log \pi_\theta(a|s) \cdot A(s,a)]
+```
+
+**Problem:** Can make huge policy changes!
+
+**PPO Solution - Clipped Objective:**
+
+```math
+L^{\text{CLIP}}(\theta) = \mathbb{E}\left[\min(r_t(\theta) A_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) A_t)\right]
+```
+
+Where the **probability ratio** is:
+
+```math
+r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{\text{old}}}(a_t|s_t)}
+```
+
+**Interpretation:**
+- $r_t = 1$: Policy unchanged
+- $r_t = 1.5$: Action 50% more likely now
+- $r_t = 0.5$: Action 50% less likely now
+- Clipping to $[0.8, 1.2]$ (when $\epsilon=0.2$): "Don't change more than 20%!"
+
+**Implementation - Actor Loss:**
+
+```python
+def compute_actor_loss(new_log_probs, old_log_probs, advantages, clip_eps=0.2):
+    # Probability ratio
+    ratio = torch.exp(new_log_probs - old_log_probs)
+    
+    # Unclipped objective
+    surr1 = ratio * advantages
+    
+    # Clipped objective
+    ratio_clipped = torch.clamp(ratio, 1-clip_eps, 1+clip_eps)
+    surr2 = ratio_clipped * advantages
+    
+    # Take minimum (pessimistic bound)
+    loss = -torch.min(surr1, surr2).mean()
+    
+    return loss
+```
+
+**Why Minimum?**  
+Be conservative: only improve when we're sure the policy change is safe.
+
+---
+
+### Building Block 8: The Critic Loss
+
+**Loss Function:**  
+Simple mean squared error:
+
+```math
+L^{VF}(\theta) = \mathbb{E}[(V_\theta(s) - R)^2]
+```
+
+**Implementation:**
+
+```python
+def compute_critic_loss(predicted_values, returns):
+    return F.mse_loss(predicted_values, returns)
+```
+
+Simple! Train the critic to predict the actual observed returns.
+
+---
+
+### Building Block 9: Entropy Bonus
+
+**Problem:**  
+Policy might converge too early to suboptimal behavior (premature exploitation).
+
+**Solution:**  
+Encourage exploration by rewarding uncertainty (entropy).
+
+**Entropy of Categorical Distribution:**
+
+```math
+H(\pi) = -\sum_a \pi(a|s) \log \pi(a|s)
+```
+
+**Intuition:**
+- Uniform distribution (completely random): High entropy
+- Deterministic (always same action): Zero entropy
+
+**Add to Total Loss:**
+
+```math
+L^{\text{TOTAL}} = L^{\text{CLIP}} + c_1 L^{VF} - c_2 H(\pi)
+```
+
+(Note the negative: we want to maximize entropy)
+
+**Implementation:**
+
+```python
+def compute_entropy_bonus(action_probs):
+    dist = torch.distributions.Categorical(action_probs)
+    entropy = dist.entropy().mean()
+    return entropy
+```
+
+---
+
+### Building Block 10: Putting It All Together
+
+**Complete PPO Update Function:**
+
+```python
+def ppo_update(policy, optimizer, states, actions, advantages, returns, 
+               old_log_probs, clip_eps=0.2, vf_coef=0.5, ent_coef=0.01):
+    """One PPO update step"""
+    
+    # Forward pass with current policy
+    action_logits, values = policy(states)
+    action_probs = F.softmax(action_logits, dim=-1)
+    
+    # Get log probs for actions we took
+    dist = torch.distributions.Categorical(action_probs)
+    new_log_probs = dist.log_prob(actions)
+    
+    # Actor loss (PPO clipped objective)
+    ratio = torch.exp(new_log_probs - old_log_probs)
+    surr1 = ratio * advantages
+    surr2 = torch.clamp(ratio, 1-clip_eps, 1+clip_eps) * advantages
+    actor_loss = -torch.min(surr1, surr2).mean()
+    
+    # Critic loss (value function error)
+    critic_loss = F.mse_loss(values.squeeze(), returns)
+    
+    # Entropy bonus (exploration)
+    entropy = dist.entropy().mean()
+    
+    # Combined loss
+    loss = actor_loss + vf_coef * critic_loss - ent_coef * entropy
+    
+    # Gradient update
+    optimizer.zero_grad()
+    loss.backward()
+    torch.nn.utils.clip_grad_norm_(policy.parameters(), 0.5)  # Prevent exploding gradients
+    optimizer.step()
     
     return {
-        'states': np.array(states),
-        'actions': np.array(actions),
-        'rewards': np.array(rewards),
-        'dones': np.array(dones),
-        'values': np.array(values),
-        'log_probs': np.array(log_probs)
+        'total_loss': loss.item(),
+        'actor_loss': actor_loss.item(),
+        'critic_loss': critic_loss.item(),
+        'entropy': entropy.item()
     }
 ```
 
-#### Step 3: Compute Advantages (GAE)
+**What Each Line Does:**
 
-**Generalized Advantage Estimation (GAE)** smoothly balances bias vs variance.
+1. **Forward pass**: Get current policy's predictions
+2. **Compute ratio**: How much has policy changed?
+3. **Actor loss**: Clipped PPO objective
+4. **Critic loss**: MSE between predicted and actual values
+5. **Entropy**: Measure of exploration
+6. **Combine**: Weighted sum of all objectives
+7. **Backprop**: Update network parameters
+
+---
+
+### Building Block 11: The Training Loop
+
+**High-Level Algorithm:**
+
+```
+for update in 1 to N:
+    1. Collect batch of experience (rollouts)
+    2. Compute advantages using GAE
+    3. Update policy multiple times on same batch (epochs)
+    4. Repeat
+```
+
+**Key Insight:**  
+PPO reuses the same data for multiple gradient updates (sample efficient!)
+
+**Implementation Skeleton:**
+
+```python
+def train_ppo(env_name='LunarLander-v2', total_steps=1_000_000):
+    # Setup
+    env = gym.make(env_name)
+    policy = ActorCritic(state_dim=8, action_dim=4)
+    optimizer = torch.optim.Adam(policy.parameters(), lr=3e-4)
+    
+    steps = 0
+    while steps < total_steps:
+        # 1. Collect experience
+        rollouts = collect_rollouts(env, policy, num_steps=2048)
+        steps += 2048
+        
+        # 2. Compute advantages
+        advantages, returns = compute_advantages(
+            rollouts['rewards'],
+            rollouts['values'],
+            rollouts['dones']
+        )
+        
+        # 3. Multiple update epochs on same data
+        for epoch in range(10):
+            metrics = ppo_update(
+                policy, optimizer,
+                rollouts['states'],
+                rollouts['actions'],
+                advantages,
+                returns,
+                rollouts['log_probs']
+            )
+        
+        # 4. Log progress
+        if steps % 10000 == 0:
+            print(f"Steps: {steps}, Loss: {metrics['total_loss']:.3f}")
+```
+
+**Why 10 epochs?**  
+Balance between sample efficiency (reuse data) and stability (don't overfit to old data).
+
+---
+
+## Part 4: Connecting Math to Code
+
+Let's map the [PPO paper](https://arxiv.org/abs/1707.06347) directly to our implementation.
+
+### 📐 The Clipped Objective (Paper Eq. 7)
+
+**Paper Notation:**
 
 ```math
-A_t = \delta_t + (\gamma \lambda) \delta_{t+1} + (\gamma \lambda)^2 \delta_{t+2} + \cdots
+L^{\text{CLIP}}(\theta) = \hat{\mathbb{E}}_t\left[\min(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t)\right]
 ```
 
-Where $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ is the **TD error**.
-
-**Real-World Analogy:**  
-When evaluating how well you did on a test:
-- **High $\lambda$**: Look at your entire semester performance
-- **Low $\lambda$**: Just look at this one test
-- **GAE**: Blend both perspectives for better judgment
+**Our Code:**
 
 ```python
-def compute_gae(rewards, values, dones, gamma=0.99, lambda_=0.95):
-    """
-    Compute Generalized Advantage Estimation
-    
-    Args:
-        rewards: Array of rewards
-        values: Array of state values from critic
-        dones: Array of done flags
-        gamma: Discount factor
-        lambda_: GAE parameter (0 = high bias, 1 = high variance)
-    
-    Returns:
-        advantages: Computed advantages
-        returns: Computed returns (targets for value function)
-    """
-    advantages = np.zeros_like(rewards)
-    last_advantage = 0
-    last_value = 0
-    
-    # Compute advantages backwards through time
-    for t in reversed(range(len(rewards))):
-        if t == len(rewards) - 1:
-            next_value = last_value
-        else:
-            next_value = values[t + 1]
-        
-        # TD error: δ_t = r_t + γ*V(s_{t+1}) - V(s_t)
-        delta = rewards[t] + gamma * next_value * (1 - dones[t]) - values[t]
-        
-        # GAE: A_t = δ_t + (γλ)*δ_{t+1} + (γλ)²*δ_{t+2} + ...
-        advantages[t] = delta + gamma * lambda_ * (1 - dones[t]) * last_advantage
-        last_advantage = advantages[t]
-        
-        if dones[t]:
-            last_advantage = 0
-            last_value = 0
-    
-    # Returns = advantages + values (what the critic should predict)
-    returns = advantages + values
-    
-    return advantages, returns
+ratio = torch.exp(new_log_probs - old_log_probs)  # r_t(θ)
+surr1 = ratio * advantages                          # r_t * A_t
+surr2 = torch.clamp(ratio, 1-ε, 1+ε) * advantages # clip(r_t, ...) * A_t
+actor_loss = -torch.min(surr1, surr2).mean()      # -E[min(...)]
 ```
 
-#### Step 4: PPO Update Step
+**Symbol Translation:**
+- $r_t(\theta)$ → `ratio`
+- $\hat{A}_t$ → `advantages`
+- $\text{clip}$ → `torch.clamp`
+- $\hat{\mathbb{E}}_t[\cdot]$ → `.mean()`
+- Negative sign: maximize objective = minimize negative
 
-The heart of PPO!
+### 📐 Value Function Loss (Paper Eq. 9)
+
+**Paper:**
+
+```math
+L_t^{VF}(\theta) = (V_\theta(s_t) - V_t^{\text{targ}})^2
+```
+
+**Our Code:**
 
 ```python
-def ppo_update(policy, optimizer, batch, clip_epsilon=0.2, value_coef=0.5, entropy_coef=0.01):
-    """
-    Perform one PPO update step
-    
-    Args:
-        policy: Actor-Critic network
-        optimizer: PyTorch optimizer
-        batch: Dictionary with states, actions, advantages, returns, old_log_probs
-        clip_epsilon: PPO clipping parameter (typically 0.2)
-        value_coef: Weight for value loss
-        entropy_coef: Weight for entropy bonus (encourages exploration)
-    
-    Returns:
-        Dictionary with loss components
-    """
-    # Convert batch to tensors
-    states = torch.FloatTensor(batch['states'])
-    actions = torch.LongTensor(batch['actions'])
+critic_loss = F.mse_loss(values, returns)
+```
+
+- $V_\theta(s_t)$ → `values` (critic output)
+- $V_t^{\text{targ}}$ → `returns` (actual observed)
+
+### 📐 GAE (Paper Appendix)
+
+**Paper:**
+
+```math
+\hat{A}_t = \sum_{l=0}^{\infty}(\gamma\lambda)^l \delta_{t+l}^V
+```
+
+Where $\delta_t^V = r_t + \gamma V(s_{t+1}) - V(s_t)$
+
+**Our Code (Recursive Form):**
+
+```python
+delta = rewards[t] + gamma * next_value - values[t]  # δ_t
+advantage = delta + gamma * lambda_ * last_advantage  # A_t = δ_t + γλ*A_{t+1}
+```
+
+**Why Recursive?**  
+Mathematically equivalent but computationally efficient:
+
+```math
+A_t = \delta_t + \gamma\lambda A_{t+1}
+```
+
+### 📐 Complete Loss Function
+
+**Paper:**
+
+```math
+L_t^{\text{CLIP+VF+S}}(\theta) = \hat{\mathbb{E}}_t\left[L_t^{\text{CLIP}}(\theta) - c_1 L_t^{VF}(\theta) + c_2 S[\pi_\theta](s_t)\right]
+```
+
+**Our Code:**
+
+```python
+loss = actor_loss + vf_coef * critic_loss - ent_coef * entropy
+```
+
+- $c_1$ → `vf_coef` (typically 0.5)
+- $c_2$ → `ent_coef` (typically 0.01)
+- $S[\pi_\theta]$ → `entropy`
+
+### Hyperparameter Defaults (from Paper)
+
+| Symbol | Paper Name | Code Name | Value | Purpose |
+|--------|-----------|-----------|-------|---------|
+| $\epsilon$ | clip range | `clip_eps` | 0.2 | PPO clipping |
+| $\gamma$ | discount | `gamma` | 0.99 | Future reward weight |
+| $\lambda$ | GAE param | `lambda_` | 0.95 | Bias-variance trade-off |
+| $c_1$ | value coef | `vf_coef` | 0.5 | Critic loss weight |
+| $c_2$ | entropy coef | `ent_coef` | 0.01 | Exploration bonus |
+| - | batch size | - | 2048 | Steps per update |
+| - | epochs | - | 10 | Updates per batch |
+| $\alpha$ | learning rate | `lr` | 3e-4 | Adam step size |
+
+**These defaults work for most environments!** Rarely need tuning.
+
+---
+
+## Part 5: Understanding Through Visualization
+
+### What Clipping Actually Does
+
+**Scenario: Positive Advantage** (good action, should increase probability)
+
+```
+If advantage = +1:
+- ratio = 0.5 → clipped to 0.8 → loss = min(0.5, 0.8) = 0.5 ✓
+- ratio = 1.0 → no clip       → loss = min(1.0, 1.0) = 1.0 ✓
+- ratio = 1.5 → clipped to 1.2 → loss = min(1.5, 1.2) = 1.2 ✓ (prevents too much change!)
+- ratio = 2.0 → clipped to 1.2 → loss = min(2.0, 1.2) = 1.2 ✓ (still capped)
+```
+
+**Scenario: Negative Advantage** (bad action, should decrease probability)
+
+```
+If advantage = -1:
+- ratio = 0.5 → clipped to 0.8 → loss = min(-0.5, -0.8) = -0.8 ✓ (prevents too much change!)
+- ratio = 1.0 → no clip       → loss = min(-1.0, -1.0) = -1.0 ✓
+- ratio = 1.5 → clipped to 1.2 → loss = min(-1.5, -1.2) = -1.5 ✓
+```
+
+**Key Insight:**  
+Clipping only matters when the policy changes significantly AND the advantage suggests changing more. It creates a "trust region" without expensive constraints.
+
+### Evolution During Training
+
+**Early Training** (random policy):
+- High entropy (~1.4 for 4 actions)
+- Ratio varies widely (0.3 to 3.0)
+- Clipping happens frequently
+- Large policy updates
+
+**Mid Training** (learning):
+- Decreasing entropy (~0.8)
+- Ratio more stable (0.7 to 1.4)
+- Some clipping
+- Moderate updates
+
+**Late Training** (converged):
+- Low entropy (~0.2)
+- Ratio near 1.0 (0.9 to 1.1)
+- Rare clipping
+- Small fine-tuning updates
+
+---
+
+## Part 6: Practical Tips and Common Issues
+
+### Debugging Checklist
+
+**Problem: Agent not learning**
+- ✅ Check if entropy is decreasing (should go from ~1.4 to ~0.3)
+- ✅ Check if advantages are normalized (mean ≈ 0, std ≈ 1)
+- ✅ Check if ratio stays near 1 (should be 0.8-1.2 most of the time)
+
+**Problem: Training unstable**
+- ✅ Lower learning rate (try 1e-4 instead of 3e-4)
+- ✅ Increase batch size (try 4096 instead of 2048)
+- ✅ Reduce clip range (try 0.1 instead of 0.2)
+
+**Problem: Learns then forgets**
+- ✅ Reduce number of epochs (try 5 instead of 10)
+- ✅ Increase clip range to 0.3
+- ✅ Add gradient clipping (already in our code at 0.5)
+
+### Key Metrics to Monitor
+
+```python
+# During training, log these:
+print(f"Reward: {episode_reward:.1f}")          # Should increase
+print(f"Actor Loss: {actor_loss:.3f}")          # Should stabilize
+print(f"Critic Loss: {critic_loss:.3f}")        # Should decrease
+print(f"Entropy: {entropy:.3f}")                # Should decrease
+print(f"Ratio Mean: {ratio.mean():.3f}")        # Should stay near 1.0
+print(f"Clip Fraction: {clip_frac:.2f}")        # Should decrease over time
     advantages = torch.FloatTensor(batch['advantages'])
     returns = torch.FloatTensor(batch['returns'])
     old_log_probs = torch.FloatTensor(batch['old_log_probs'])
