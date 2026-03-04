@@ -2435,7 +2435,7 @@ gitGraph
 
 **Day 4:**
 - Someone fixes the database → commit `H` on main
-- Your branch is now **4 commits behind main**!
+- Your branch is now **3 commits behind main**!
 
 #### Why This Is a Problem
 
