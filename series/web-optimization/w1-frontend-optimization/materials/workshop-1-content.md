@@ -539,6 +539,41 @@ module.exports = {
 };
 ```
 
+**Configuration** (Vite):
+
+Vite uses Rollup under the hood — tree shaking is **enabled by default** in production builds. No extra config is required for basic usage:
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  build: {
+    // Tree shaking is on by default; these are optional fine-tuning options
+    rollupOptions: {
+      treeshake: {
+        // Remove functions marked as side-effect-free
+        preset: 'recommended',
+        // Treat property reads on modules as side-effect-free
+        propertyReadSideEffects: false,
+      },
+    },
+  },
+});
+```
+
+> 💡 **Tip**: Mark individual packages as side-effect-free in `package.json` so both Vite and Webpack skip unused exports:
+>
+> ```json
+> { "sideEffects": false }
+> ```
+>
+> Or allowlist files that _do_ have side effects (e.g., global CSS imports):
+>
+> ```json
+> { "sideEffects": ["*.css", "./src/polyfills.js"] }
+> ```
+
 #### Technique: Code Splitting
 
 **Definition**: Split your code into smaller chunks loaded on demand.
