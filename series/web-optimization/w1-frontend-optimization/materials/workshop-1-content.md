@@ -391,6 +391,31 @@ function blockingTask() {
 
 ### Tools to Measure Performance
 
+> 🎬 **Live Demo — run this before starting the tools walkthrough**
+>
+> Open [`scripts/demo/demo.html`](../scripts/demo/demo.html) in Chrome using a local server:
+>
+> ```bash
+> # Option A — Node.js
+> npx serve series/web-optimization/w1-frontend-optimization/scripts/demo -p 8080
+>
+> # Option B — Python
+> python3 -m http.server 8080 --directory series/web-optimization/w1-frontend-optimization/scripts/demo
+> ```
+>
+> Then navigate to `http://localhost:8080/demo.html` and run a Lighthouse audit.
+> The page is intentionally built with the following issues:
+>
+> | Metric | Intentional Issue |
+> |--------|-------------------|
+> | **LCP** | Large unoptimised hero image loaded from an external URL |
+> | **CLS** | `<img>` has no explicit `width`/`height`; late-injected banner demo |
+> | **INP / TBT** | Synchronous ~600 ms spin-loop on interaction; 300 ms blocking task on load |
+> | **TTI** | Render-blocking script runs before content is interactive |
+>
+> Walk students through each failing metric in the Lighthouse report, then show them
+> the corresponding section of the demo page that caused it.
+
 #### 1. Lighthouse
 
 **Access**: Chrome DevTools → Lighthouse tab
