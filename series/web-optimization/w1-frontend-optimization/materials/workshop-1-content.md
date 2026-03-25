@@ -46,6 +46,32 @@ Frontend optimization improves:
 ✅ **Conversion rate** - Speed directly correlates to sales  
 ✅ **Mobile performance** - Critical for mobile-first users
 
+```mermaid
+mindmap
+  root((Frontend
+  Optimization))
+    🚀 Loading Speed
+      Faster page loads
+      Lower TTFB
+      Smaller assets
+    🎯 User Experience
+      Smooth interactions
+      No layout shifts
+      Instant responses
+    📈 SEO Ranking
+      Google PageSpeed
+      Core Web Vitals
+      Mobile-first index
+    💰 Conversion Rate
+      1s delay = 7% loss
+      Fewer abandoned carts
+      Higher engagement
+    📱 Mobile Performance
+      Reduced data usage
+      Battery efficiency
+      Offline support
+```
+
 #### Real-World Impact
 
 The numbers speak for themselves:
