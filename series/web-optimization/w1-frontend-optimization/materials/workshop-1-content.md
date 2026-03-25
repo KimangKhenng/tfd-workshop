@@ -179,6 +179,8 @@ Google's Core Web Vitals are three critical metrics that measure real-world user
 **Needs Improvement**: 2.5 - 4.0 seconds  
 **Poor**: > 4.0 seconds
 
+![LCP Score Thresholds](../assets/imgs/good-lcp-values.svg)
+
 ```mermaid
 graph LR
     A[Page Load Starts] -->|LCP < 2.5s| B[✅ Good]
@@ -228,6 +230,8 @@ graph LR
 **Good INP**: < 200 milliseconds  
 **Needs Improvement**: 200 - 500 ms  
 **Poor**: > 500 ms
+
+![INP Score Thresholds](../assets/imgs/inp-desktop-v2.svg)
 
 **Example scenarios**:
 - User clicks a button → how long until visual feedback?
@@ -282,6 +286,8 @@ graph LR
 **Good CLS**: < 0.1  
 **Needs Improvement**: 0.1 - 0.25  
 **Poor**: > 0.25
+
+![CLS Score Thresholds](../assets/imgs/good-cls-values.svg)
 
 **Classic problem**:
 
@@ -359,6 +365,8 @@ sequenceDiagram
 
 **Good**: < 3.8 seconds
 
+![TTI Acceptable Score](../assets/imgs/TTI-acceptable-score.png)
+
 **Requirements for TTI**:
 - Page displays useful content (FCP)
 - Event handlers registered
@@ -369,6 +377,8 @@ sequenceDiagram
 **What it measures**: Total time the main thread was blocked (preventing user input).
 
 **Good**: < 200 milliseconds
+
+![TBT Scores](../assets/imgs/TBT-scores.png)
 
 ```javascript
 // Blocking task example
