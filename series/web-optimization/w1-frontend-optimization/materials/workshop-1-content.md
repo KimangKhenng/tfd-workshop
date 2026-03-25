@@ -10,9 +10,8 @@
 3. [Frontend Optimization Techniques](#3-frontend-optimization-techniques-40-minutes)
 4. [Network Optimization](#4-network-optimization-10-minutes)
 5. [Framework-Level Optimization](#5-framework-level-optimization-5-minutes)
-6. [Monitoring Performance in Production](#6-monitoring-performance-in-production-5-minutes)
-7. [Practical Optimization Workflow](#7-practical-optimization-workflow-5-minutes)
-8. [Conclusion](#8-conclusion-5-minutes)
+6. [Practical Optimization Workflow](#6-practical-optimization-workflow-5-minutes)
+7. [Conclusion](#7-conclusion-5-minutes)
 
 ---
 
@@ -1528,167 +1527,7 @@ const MemoizedComponent = memo(function MyComponent({ data }) {
 
 ---
 
-## 6. Monitoring Performance in Production (5 minutes)
-
-**Lab data ≠ Real user experience**
-
-Optimization doesn't end at deployment—you must monitor real users.
-
-### Why Production Monitoring Matters
-
-```
-Lab testing:
-- Fast network
-- Powerful device
-- No browser extensions
-- No other tabs open
-≠ Reality!
-
-Real users:
-- Slow 3G connection
-- Old mobile device
-- Multiple extensions
-- Low battery mode
-```
-
-### Real User Monitoring (RUM) Tools
-
-#### 1. Google Analytics 4 - Web Vitals
-
-**Setup**:
-
-```javascript
-// Install web-vitals library
-npm install web-vitals
-
-// Track Core Web Vitals
-import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
-
-function sendToAnalytics({ name, value, id }) {
-  gtag('event', name, {
-    event_category: 'Web Vitals',
-    value: Math.round(value),
-    event_label: id,
-    non_interaction: true,
-  });
-}
-
-getCLS(sendToAnalytics);
-getFID(sendToAnalytics);
-getFCP(sendToAnalytics);
-getLCP(sendToAnalytics);
-getTTFB(sendToAnalytics);
-```
-
-**View in GA4**:
-- Events → Web Vitals
-- Compare by device, country, browser
-
-#### 2. Sentry Performance
-
-**Features**:
-- Automatic instrumentation
-- Transaction tracking
-- Frontend + backend correlation
-
-```javascript
-import * as Sentry from "@sentry/browser";
-
-Sentry.init({
-  dsn: "YOUR_DSN",
-  tracesSampleRate: 0.1, // Track 10% of transactions
-  
-  integrations: [
-    new Sentry.BrowserTracing({
-      tracingOrigins: ["example.com", /^\//]
-    })
-  ]
-});
-```
-
-#### 3. Datadog RUM
-
-**Features**:
-- Session replay
-- Error tracking
-- Performance monitoring
-- Custom metrics
-
-```javascript
-import { datadogRum } from '@datadog/browser-rum';
-
-datadogRum.init({
-  applicationId: 'YOUR_APP_ID',
-  clientToken: 'YOUR_TOKEN',
-  site: 'datadoghq.com',
-  service: 'my-web-app',
-  env: 'production',
-  version: '1.0.0',
-  sampleRate: 100,
-  trackInteractions: true,
-});
-```
-
-### Key Metrics to Track
-
-**Performance metrics**:
-- Core Web Vitals (LCP, FID, CLS)
-- Page load time (75th percentile)
-- Time to First Byte (TTFB)
-
-**Business metrics**:
-- Conversion rate by load time
-- Bounce rate vs performance
-- Revenue per performance bucket
-
-**Technical metrics**:
-- JavaScript errors
-- Failed API calls
-- Slow backend requests
-
-### Performance Budgets
-
-Set limits and get alerted when exceeded:
-
-```javascript
-// lighthouserc.js
-module.exports = {
-  ci: {
-    collect: {
-      url: ['http://localhost:3000/']
-    },
-    assert: {
-      assertions: {
-        'first-contentful-paint': ['error', { maxNumericValue: 2000 }],
-        'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
-        'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-        'total-blocking-time': ['error', { maxNumericValue: 300 }]
-      }
-    }
-  }
-};
-```
-
-**CI/CD integration**:
-
-```yaml
-# .github/workflows/performance.yml
-name: Performance
-on: [push]
-
-jobs:
-  lighthouse:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: npm install && npm run build
-      - run: npm install -g @lhci/cli
-      - run: lhci autorun
-```
-
----
-
-## 7. Practical Optimization Workflow (5 minutes)
+## 6. Practical Optimization Workflow (5 minutes)
 
 **Follow this systematic process**:
 
@@ -1805,7 +1644,7 @@ graph LR
 
 ---
 
-## 8. Conclusion (5 minutes)
+## 7. Conclusion (5 minutes)
 
 ### Why Frontend Optimization Matters
 
