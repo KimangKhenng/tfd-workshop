@@ -1,5 +1,4 @@
-# Workshop 1: Frontend Optimization - Complete Content
-
+# Workshop 1: Frontend Optimization
 **Duration**: 1.5 hours (90 minutes)  
 **Level**: Intermediate  
 **Last Updated**: March 2026
