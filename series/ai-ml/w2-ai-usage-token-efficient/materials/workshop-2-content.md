@@ -134,6 +134,244 @@ console.log('test')            → 6 tokens: [5467, 13, 848, 2640, 1985, 11588]
 
 ---
 
+### Understanding Context Windows
+
+**Duration**: 5 minutes
+
+The **context window** is one of the most important concepts in working with LLMs, yet it's often misunderstood. Let's break it down.
+
+#### What Is a Context Window?
+
+The context window is the **maximum amount of text** (measured in tokens) that an LLM can process in a single request. Think of it as the LLM's "working memory."
+
+```mermaid
+graph LR
+    A[System Prompt] --> W[Context Window]
+    B[Conversation History] --> W
+    C[User Message] --> W
+    D[AI Response] --> W
+    W --> E[Total Must Be ≤ Max Window Size]
+    
+    style W fill:#4dabf7
+    style E fill:#ff6b6b
+```
+
+**Everything counts toward the limit:**
+- System instructions (agent capabilities, tool definitions)
+- Previous messages (conversation history)
+- Your current prompt
+- Files you've loaded or referenced
+- The AI's response (as it generates)
+
+#### Visual Example: Context Window Filling Up
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Context Window: 128,000 tokens (GPT-4 Turbo)              │
+├─────────────────────────────────────────────────────────────┤
+│ System Prompt (2,000 tokens)           ▓▓                  │
+│ Tool Definitions (4,000 tokens)        ▓▓▓▓                │
+│ Conversation History (20,000 tokens)   ▓▓▓▓▓▓▓▓▓▓▓▓▓▓      │
+│ Loaded Files (30,000 tokens)           ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│
+│ Your Prompt (500 tokens)               ▓                    │
+│ AI Response (3,500 tokens)             ▓▓▓                  │
+├─────────────────────────────────────────────────────────────┤
+│ Total Used: 60,000 tokens                                   │
+│ Remaining: 68,000 tokens                                    │
+└─────────────────────────────────────────────────────────────┘
+
+Usage: 47% ████████████░░░░░░░░░░░░░░
+```
+
+#### Why Context Windows Matter for Token Efficiency
+
+**Problem 1: Hidden Token Usage**
+
+When you ask an AI agent to help with a project, it might load:
+
+```
+System prompt:           2,000 tokens
+Tool definitions:        4,000 tokens
+Your codebase (10 files): 30,000 tokens
+Search results:          10,000 tokens
+Conversation history:    15,000 tokens
+Your actual prompt:      100 tokens
+─────────────────────────────────────
+Total INPUT tokens:      61,100 tokens
+
+AI Response:             2,000 tokens
+─────────────────────────────────────
+Total BILLED tokens:     63,100 tokens
+```
+
+**You paid for 63,100 tokens even though your prompt was only 100 tokens!**
+
+**Problem 2: Context Window Overflow**
+
+```mermaid
+graph TD
+    A[Request Starts] --> B{Check Context Size}
+    B -->|Under Limit| C[Process Normally]
+    B -->|Over Limit| D[Truncate Oldest Messages]
+    D --> E[Lost Context!]
+    E --> F[AI Forgets Earlier Conversation]
+    F --> G[Errors or Repeated Work]
+    
+    style E fill:#ff6b6b
+    style G fill:#ff6b6b
+```
+
+When the context window fills up:
+1. **Older messages get dropped** - AI "forgets" earlier parts of the conversation
+2. **You lose important context** - Previously discussed requirements disappear
+3. **AI may contradict itself** - Can't see what it said earlier
+4. **Repeated work** - AI re-does things it already completed
+
+#### Real-World Example: Context Window in Action
+
+**Scenario**: You're working on a project with an AI agent over 30 minutes.
+
+```
+Turn 1:  [System: 2k] + [Prompt: 0.1k] + [Response: 1k]     = 3.1k tokens
+Turn 2:  [System: 2k] + [History: 3.1k] + [Prompt: 0.1k] + [Response: 1k] = 6.2k tokens
+Turn 3:  [System: 2k] + [History: 6.2k] + [Prompt: 0.5k] + [Response: 2k] = 10.7k tokens
+Turn 4:  [System: 2k] + [History: 10.7k] + [Files: 20k] + [Prompt: 0.1k] + [Response: 3k] = 35.8k tokens
+Turn 5:  [System: 2k] + [History: 35.8k] + [Files: 20k] + [Prompt: 0.1k] + [Response: 2k] = 59.9k tokens
+
+... after 15 turns, you've hit 120k tokens
+Turn 16: Context window nearly full! Oldest turns start dropping!
+```
+
+**The token bill compounds with each turn** because history accumulates!
+
+#### Context Window Sizes Comparison
+
+| Model | Context Window | Equivalent To | Use Case |
+|-------|---------------|---------------|----------|
+| GPT-4 Turbo | 128,000 tokens | ~300 pages | Large codebases, long conversations |
+| GPT-4o | 128,000 tokens | ~300 pages | Efficient large context processing |
+| Claude 3.5 Sonnet | 200,000 tokens | ~500 pages | Entire repositories, books |
+| Claude 3 Opus | 200,000 tokens | ~500 pages | Maximum context needs |
+| GPT-3.5 Turbo | 16,000 tokens | ~40 pages | Short conversations, small files |
+
+**1 page ≈ 400-500 tokens** (typical text document)
+
+#### How Context Windows Relate to Token Costs
+
+Larger context windows enable **two behaviors** that increase costs:
+
+**1. Lazy Loading** - AI agents load more than needed
+
+```
+❌ With Large Context Window (200k tokens):
+"I'll load all 50 files to be safe" → 100k tokens loaded
+
+✅ With Smaller Context Window (16k tokens):
+"I can only fit 3 files, so I'll be selective" → 6k tokens loaded
+```
+
+**2. Context Accumulation** - History grows with each turn
+
+```
+Conversation over 20 turns:
+
+Turn 1:  Input: 2k tokens
+Turn 10: Input: 35k tokens (history accumulated)
+Turn 20: Input: 80k tokens (history keeps growing)
+
+Total tokens used: 500k+ tokens
+Total cost: $5+
+```
+
+#### Visualizing the Problem
+
+```
+Without Managing Context:
+┌──────────────────────────────────────────┐
+│ Turn 1:  ▓                               │ 2k tokens
+│ Turn 5:  ▓▓▓▓                            │ 8k tokens
+│ Turn 10: ▓▓▓▓▓▓▓▓▓▓▓▓                    │ 25k tokens
+│ Turn 15: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓          │ 55k tokens
+│ Turn 20: ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  │ 95k tokens
+└──────────────────────────────────────────┘
+                 ↓ Approaching limit!
+
+With Smart Context Management:
+┌──────────────────────────────────────────┐
+│ Turn 1:  ▓                               │ 2k tokens
+│ Turn 5:  ▓▓                              │ 4k tokens
+│ Turn 10: ▓▓▓                             │ 6k tokens
+│ Turn 15: ▓▓▓▓                            │ 8k tokens
+│ Turn 20: ▓▓▓▓▓                           │ 10k tokens
+└──────────────────────────────────────────┘
+         ↓ Staying efficient by limiting context
+```
+
+#### Token Efficiency Strategies for Context Windows
+
+**Strategy 1: Start Fresh When Needed**
+
+Instead of:
+```
+[20 turns of conversation = 80k tokens in context]
+Turn 21: "Now let's work on a different feature"
+→ Still carrying all 80k tokens!
+```
+
+Do this:
+```
+[20 turns = 80k tokens]
+[Start new conversation]
+Turn 1: "Working on feature X. Here's the context: ..."
+→ Only 2k tokens!
+```
+
+**Strategy 2: Summarize and Reset**
+
+```
+Turn 15: "Summarize what we've accomplished so far"
+→ AI provides 500-token summary
+[Start new conversation with summary]
+Turn 16: "Based on this summary, let's continue with..."
+→ 500 tokens instead of 50k tokens of history
+```
+
+**Strategy 3: Be Selective About Loaded Files**
+
+```
+❌ "Look at my project and add logging"
+→ Loads 50 files, 100k tokens
+
+✅ "Add logging to these 3 files: app.py, auth.py, utils.py"
+→ Loads 3 files, 6k tokens
+```
+
+**Strategy 4: Use Stateless Requests**
+
+```
+Instead of long conversation:
+Turn 1: Load codebase (30k tokens)
+Turn 2: Ask question (+ 30k tokens = 60k total)
+Turn 3: Ask another (+30k tokens = 90k total)
+
+Use separate requests:
+Request 1: "In app.py line 45, fix the bug where..."  (1k tokens)
+Request 2: "In auth.py, add rate limiting to..."      (1k tokens)
+Request 3: "In utils.py, optimize the cache function" (1k tokens)
+```
+
+#### The Bottom Line
+
+**Context windows are:**
+- ✅ Powerful for complex tasks requiring lots of information
+- ⚠️ Expensive if not managed carefully
+- 📊 Measured in tokens (everything counts!)
+- 🎯 Best used strategically, not maximized by default
+
+**Key Takeaway**: Bigger context windows don't mean you should use them fully. Think of them like RAM — just because you have 32GB doesn't mean every app should use 32GB!
+
+---
+
 ### The Evolution: From Prompts to Agents
 
 **Duration**: 3 minutes

@@ -543,6 +543,159 @@ def demo_cost_calculator():
 
 
 # ============================================================================
+# DEMO 8: Context Window Visualization
+# ============================================================================
+
+def demo_context_windows():
+    """Visualize context windows and token accumulation."""
+    print("\n" + "=" * 70)
+    print("DEMO 8: Understanding Context Windows")
+    print("=" * 70)
+    
+    encoder = tiktoken.encoding_for_model("gpt-4")
+    
+    print("\n📖 What is a Context Window?")
+    print("-" * 70)
+    print("The context window is the MAXIMUM amount of text (in tokens)")
+    print("that an LLM can process in a single request.")
+    print("\nThink of it as the LLM's 'working memory'.")
+    
+    # Show different model context windows
+    context_windows = {
+        "GPT-4 Turbo": 128000,
+        "GPT-4o": 128000,
+        "Claude 3.5 Sonnet": 200000,
+        "Claude 3 Opus": 200000,
+        "GPT-3.5 Turbo": 16000,
+    }
+    
+    print("\n📊 Context Window Sizes:\n")
+    print(f"{'Model':<20} {'Max Tokens':<12} {'≈ Pages':<10}")
+    print("-" * 70)
+    for model, tokens in context_windows.items():
+        pages = tokens // 400  # ~400 tokens per page
+        print(f"{model:<20} {tokens:>11,}  {pages:>9,}")
+    
+    # Simulate context filling up
+    print("\n\n🔄 Simulating Context Window Usage Over Conversation:")
+    print("=" * 70)
+    
+    max_window = 128000  # GPT-4 Turbo
+    
+    conversation_turns = [
+        {"turn": 1, "system": 2000, "history": 0, "prompt": 100, "response": 1000},
+        {"turn": 5, "system": 2000, "history": 6000, "prompt": 200, "response": 2000},
+        {"turn": 10, "system": 2000, "history": 20000, "files": 15000, "prompt": 100, "response": 3000},
+        {"turn": 15, "system": 2000, "history": 40000, "files": 25000, "prompt": 500, "response": 2500},
+        {"turn": 20, "system": 2000, "history": 70000, "files": 30000, "prompt": 100, "response": 3000},
+    ]
+    
+    for turn_info in conversation_turns:
+        turn = turn_info["turn"]
+        total = sum(v for k, v in turn_info.items() if k != "turn")
+        percentage = (total / max_window) * 100
+        
+        # Create visual bar
+        bar_length = 50
+        filled = int((total / max_window) * bar_length)
+        bar = "█" * filled + "░" * (bar_length - filled)
+        
+        print(f"\nTurn {turn}:")
+        print(f"  System prompt: {turn_info.get('system', 0):>6,} tokens")
+        if 'history' in turn_info and turn_info['history'] > 0:
+            print(f"  History:       {turn_info['history']:>6,} tokens")
+        if 'files' in turn_info and turn_info['files'] > 0:
+            print(f"  Loaded files:  {turn_info['files']:>6,} tokens")
+        print(f"  Your prompt:   {turn_info['prompt']:>6,} tokens")
+        print(f"  AI response:   {turn_info['response']:>6,} tokens")
+        print(f"  {'─' * 40}")
+        print(f"  TOTAL:         {total:>6,} tokens ({percentage:.1f}% of window)")
+        print(f"  [{bar}] {percentage:.1f}%")
+        
+        if percentage > 80:
+            print("  ⚠️  WARNING: Context window nearly full!")
+    
+    # Show the problem
+    print("\n\n⚠️  The Problem with Large Context Windows:")
+    print("=" * 70)
+    
+    problem_example = """
+Turn 1:  System (2k) + Prompt (0.1k) + Response (1k) = 3.1k tokens
+Turn 2:  System (2k) + History (3.1k) + Prompt (0.1k) + Response (1k) = 6.2k
+Turn 3:  System (2k) + History (6.2k) + Prompt (0.5k) + Response (2k) = 10.7k
+Turn 10: System (2k) + History (35k) + Files (20k) + Prompt (0.1k) = 57.1k
+Turn 20: System (2k) + History (95k) + Files (30k) + Prompt (0.1k) = 127.1k
+
+➡️  Nearly FULL context window!
+➡️  Total tokens consumed: 500k+ tokens across all turns
+➡️  Cost: $5-15 depending on model
+"""
+    print(problem_example)
+    
+    # Token efficiency strategies
+    print("\n✅ Token Efficiency Strategies:")
+    print("=" * 70)
+    
+    strategies = [
+        ("1. Start fresh conversations", "Don't carry 50k tokens of history for new topics"),
+        ("2. Summarize and reset", "Get summary, start new chat with just the summary"),
+        ("3. Be selective with files", "Load 3 specific files, not entire codebase"),
+        ("4. Use stateless requests", "Each request independent = no history buildup"),
+        ("5. Set boundaries", "Tell AI not to load unnecessary context"),
+    ]
+    
+    for strategy, explanation in strategies:
+        print(f"\n  {strategy}")
+        print(f"     → {explanation}")
+    
+    # Real cost example
+    print("\n\n💰 Real Cost Impact:")
+    print("=" * 70)
+    
+    inefficient_tokens = 500000  # accumulated over conversation
+    efficient_tokens = 50000     # with smart context management
+    
+    cost_per_1m_input = 10  # GPT-4 pricing
+    
+    inefficient_cost = (inefficient_tokens / 1_000_000) * cost_per_1m_input
+    efficient_cost = (efficient_tokens / 1_000_000) * cost_per_1m_input
+    
+    print(f"\nWithout context management:")
+    print(f"  Total tokens: {inefficient_tokens:,}")
+    print(f"  Cost: ${inefficient_cost:.2f}")
+    
+    print(f"\nWith smart context management:")
+    print(f"  Total tokens: {efficient_tokens:,}")
+    print(f"  Cost: ${efficient_cost:.2f}")
+    
+    savings = inefficient_cost - efficient_cost
+    percentage_saved = (savings / inefficient_cost) * 100
+    
+    print(f"\n💰 Savings: ${savings:.2f} ({percentage_saved:.0f}%)")
+    
+    # Visualize context window capacity
+    print("\n\n📊 Context Window Capacity Visualization:")
+    print("=" * 70)
+    print("\nWithout Management (Turn 20):")
+    tokens_used = 105000
+    bar_filled = int((tokens_used / max_window) * 50)
+    print(f"  [{'█' * bar_filled}{'░' * (50 - bar_filled)}] {tokens_used:,}/{max_window:,}")
+    print(f"  {(tokens_used/max_window)*100:.1f}% full - Almost at limit!")
+    
+    print("\nWith Smart Management (Turn 20):")
+    tokens_used = 12000
+    bar_filled = int((tokens_used / max_window) * 50)
+    print(f"  [{'█' * bar_filled}{'░' * (50 - bar_filled)}] {tokens_used:,}/{max_window:,}")
+    print(f"  {(tokens_used/max_window)*100:.1f}% full - Plenty of room!")
+    
+    print("\n💡 Key Takeaway:")
+    print("   Bigger context windows ≠ Better results")
+    print("   Think of them like RAM - you have it, but don't waste it!")
+    
+    input("\nPress Enter to continue...")
+
+
+# ============================================================================
 # Main Demo Flow
 # ============================================================================
 
@@ -562,6 +715,7 @@ def main():
         ("Incremental vs. Monolithic", demo_incremental_vs_monolithic),
         ("Context Loading", demo_context_efficiency),
         ("Agentic Token Costs", demo_agentic_costs),
+        ("Context Window Visualization", demo_context_windows),
         ("Cost Calculator", demo_cost_calculator),
     ]
     

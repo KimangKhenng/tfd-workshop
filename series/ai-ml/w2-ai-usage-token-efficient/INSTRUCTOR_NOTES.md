@@ -49,11 +49,22 @@
   - Visual timeline: Prompts → Chat → Agents
   - Emphasize the token multiplication
   
+- **Understanding Context Windows** (3 min) **⭐ NEW SECTION**
+  - Visual explanation using context-windows.png diagram
+  - Show how everything counts toward the limit
+  - Demonstrate context accumulation over turns
+  - Run Demo 8 from demo script (Context Window Visualization)
+  
 - **Why Usage Exploding** (2 min)
   - Quick examples of agent tool calls
   - Show real token counts from a simple agent request
+  - Connect back to context window filling up
 
 **💡 Teaching Tip**: Use the demo script for Part 1. It's interactive and keeps engagement high.
+
+**💡 Visual Aid**: Display `assets/context-windows.png` when explaining how context accumulates. Point to each component (system, history, files, prompt, response) and emphasize they ALL count.
+
+**💡 Interactive Poll**: "How many of you have had AI conversations that got expensive or confused after many messages?" (Most will raise hands - this validates the context window problem)
 
 ---
 
@@ -278,6 +289,85 @@ Make sure to explicitly connect content to objectives:
 > - 'No tests yet, just the implementation'
 > - 'Stop after generating X, wait for my feedback'
 > Also, consider: Is your task actually small enough? Break it down further."
+
+### Issue 6: "Why not just make context windows infinite?" ⭐ NEW
+**Response**:
+> "Great question! Several reasons:
+> - **Processing Time**: More tokens = slower responses. Even with 200k windows, processing takes time
+> - **Cost**: Providers charge per token. Infinite windows would cost infinite money
+> - **Memory**: GPUs have physical memory limits. Each token requires computation and storage
+> - **Diminishing Returns**: Research shows attention degrades over very long contexts
+> - **Technical Architecture**: Current transformer models have quadratic complexity with context length
+> 
+> Think of it like RAM — we could theoretically have terabytes, but it's expensive and often unnecessary.
+> The real skill is working efficiently within limits."
+
+### Issue 7: "Can't the AI just remember what we discussed earlier?" ⭐ NEW
+**Response**:
+> "This is a common misconception! LLMs are **stateless** — each request is completely independent.
+> 
+> [Show the llm-no-memory.png diagram]
+> 
+> To create the illusion of memory:
+> - The conversation history is re-sent with EVERY request
+> - Turn 1: You send 100 tokens
+> - Turn 2: You send 100 new + 100 old = 200 tokens
+> - Turn 10: You send 100 new + 900 old = 1,000 tokens
+> 
+> This is why:
+> - Long conversations get expensive (compounding history)
+> - Starting fresh saves tokens (no history to resend)
+> - Context windows fill up over time
+> - Summaries help (condense 1,000 tokens into 100)
+> 
+> It's not a bug, it's the architecture. Understanding this is key to efficiency!"
+
+### Issue 8: "My AI conversation got confused after many messages. Why?" ⭐ NEW
+**Response**:
+> "This is **context window overflow** in action!
+> 
+> [Show the context-windows.png diagram and point to the overflow scenario]
+> 
+> What happened:
+> 1. Your conversation reached the context window limit (e.g., 128k tokens)
+> 2. To fit new messages, the oldest ones were dropped
+> 3. The AI literally 'forgot' earlier parts of the conversation
+> 4. It started contradicting itself or missing important context
+> 
+> **Solutions**:
+> - Start a fresh conversation when switching topics
+> - Ask AI to summarize progress, then start new chat with summary
+> - Be more concise (every message counts toward the limit)
+> - Avoid loading unnecessary files into context
+> - Use stateless requests for independent tasks
+> 
+> Think of it like a whiteboard — once it's full, you have to erase old stuff to add new stuff!"
+
+### Issue 9: "How do I know when I'm close to the context limit?" ⭐ NEW
+**Response**:
+> "Great awareness question! Here are signs:
+> 
+> **Warning Signs**:
+> - Responses getting slower
+> - AI 'forgetting' things you discussed earlier
+> - Contradicting previous statements
+> - API errors about token limits
+> - Unexpected behavior in agentic workflows
+> 
+> **Proactive Monitoring**:
+> - Many AI tools show token usage (GitHub Copilot, Cursor)
+> - Use tiktoken library to count tokens yourself
+> - Track conversation length (>20 turns = likely high usage)
+> - Notice when files are loaded (each file = thousands of tokens)
+> 
+> **Best Practice**:
+> Don't wait for the limit! Start fresh when:
+> - Switching topics or tasks
+> - You've had >15-20 turns of conversation
+> - The AI loaded many files
+> - You notice degraded performance
+> 
+> [Run Demo 8 to show visual token accumulation]"
 
 ---
 

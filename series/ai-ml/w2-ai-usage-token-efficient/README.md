@@ -80,8 +80,11 @@ By the end of this workshop, you will be able to:
 ## 📖 Materials
 
 - [Workshop Content](materials/workshop-2-content.md) - Detailed teaching materials
+- [Context Windows Visual Guide](materials/context-windows-visual-guide.md) - Visual explanation of context windows ⭐ NEW
+- [Quick Reference](materials/QUICK_REFERENCE.md) - One-page cheat sheet
 - [Hands-On Lab](exercises/hands-on-lab.md) - Practical exercises
-- [Demo Script](scripts/demo-script.py) - Instructor demonstrations
+- [Demo Script](scripts/demo-script.py) - Instructor demonstrations (8 interactive demos)
+- [Assets](assets/) - Visual diagrams and images
 
 ## 🔗 Resources
 
