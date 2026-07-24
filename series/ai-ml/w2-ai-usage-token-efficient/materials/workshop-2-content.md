@@ -65,6 +65,20 @@ graph LR
 3. **Stateless**: Each request is independent unless context is explicitly provided
 4. **Token-Based Billing**: You pay for both input (prompt) and output (response) tokens
 
+#### Why LLMs Have No Memory
+
+![LLMs are Stateless - No Memory Between Requests](../assets/llm-no-memory.png)
+
+**Critical Insight**: LLMs don't remember previous conversations. Each request is completely independent.
+
+To create the illusion of memory:
+- The entire conversation history is **re-sent with every request**
+- Turn 1: 100 tokens sent
+- Turn 2: 100 new + 100 old = 200 tokens sent
+- Turn 10: 100 new + 900 old = 1,000 tokens sent
+
+This is why long conversations become expensive — you're paying to "remind" the AI of your entire conversation each time!
+
 #### Real-World Analogy
 
 Think of an LLM like autocomplete on steroids:
@@ -182,6 +196,10 @@ graph LR
 
 Usage: 47% ████████████░░░░░░░░░░░░░░
 ```
+
+![Context Window Components and Usage](../assets/context-windows.png)
+
+*The diagram above shows how different components fill up your context window. Notice how everything — system prompts, history, files, your input, and AI responses — all count toward the limit!*
 
 #### Why Context Windows Matter for Token Efficiency
 
